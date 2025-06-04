@@ -1,16 +1,26 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
+import { CryptoService } from 'src/common/helpers/CryptoRate.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('profile')
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) { }
+  constructor(private readonly profileService: ProfileService, private readonly cryptoService: CryptoService) { }
 
   @Get()
   getProfile(@Req() req) {
     return this.profileService.getUserProfile(req.user)
   }
 
-  
+  @Get('crypto/:coin')
+  async getCoinPrice(@Param('coin') coin: string) {
+    const price = await this.cryptoService.getPriceUSD(coin);
+    return { [coin]: price };
+  }
+
+  @Post('crypto')
+  swap(@Body() swapDto: { from: string, to: string, amount: number }) {
+    return this.cryptoService.swap(swapDto.from, swapDto.to, swapDto.amount);
+  }
 }
