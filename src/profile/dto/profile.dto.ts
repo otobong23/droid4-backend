@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 
 export class ProfileDto {}
 
@@ -10,6 +10,24 @@ export class SwapDto {
    @IsString()
    to: string;
 
-   @IsString()
+   @IsNumber()
    amount: number;
+}
+
+export class DepositDto {
+
+   @IsString()
+   from: string;
+
+   @IsNumber()
+   amount: number;
+}
+
+export class WithdrawDto {
+
+   @IsString()
+   to: string;
+
+   @IsNumber()
+   ammount: number;
 }

@@ -1,3 +1,5 @@
+
+//Miracle Boniface
 import { Injectable, InternalServerErrorException, NotAcceptableException, OnModuleInit } from '@nestjs/common';
 import fetch from 'node-fetch';
 
@@ -72,8 +74,11 @@ export class CryptoService implements OnModuleInit {
     const fromId = this.getCoinIdById(from);
     const toId = this.getCoinIdById(to);
 
-    if (!fromId || !toId) {
-      throw new NotAcceptableException('Invalid coin symbol');
+    if (!fromId) {
+      throw new NotAcceptableException(`Coin symbol ${from} is not supported.`);
+    }
+    if (!toId) {
+      throw new NotAcceptableException(`Coin symbol ${to} is not supported.`);
     }
 
     const url = `https://api.coingecko.com/api/v3/simple/price?ids=${fromId},${toId}&vs_currencies=usd`;
