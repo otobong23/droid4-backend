@@ -13,21 +13,3 @@ export class SwapDto {
    @IsNumber()
    amount: number;
 }
-
-export class DepositDto {
-
-   @IsString()
-   from: string;
-
-   @IsNumber()
-   amount: number;
-}
-
-export class WithdrawDto {
-
-   @IsString()
-   to: string;
-
-   @IsNumber()
-   ammount: number;
-}

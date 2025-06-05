@@ -20,11 +20,11 @@ export class UserTransaction {
   @Prop()
   Coin: string; // e.g. 'USDT', 'BTC'
 
-  @Prop()
-  description: string; // optional notes
+  @Prop({ default: null })
+  network: string;
 
   @Prop({ type: Date })
-  completedAt?: Date;
+  date: Date;
 }
 
 export const UserTransactionSchema = SchemaFactory.createForClass(UserTransaction);

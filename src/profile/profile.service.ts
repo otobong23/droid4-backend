@@ -17,9 +17,4 @@ export class ProfileService {
       throw new NotFoundException('User not Found, please signup')
     }
   }
-
-  async deposit(){
-
-  }
-  async withdraw(){}
 }

@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, BadRequestException, UploadedFile } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
-import { SendDTO, RecieveDTO } from './dto/create-transaction.dto';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
+import { DepositDto, WithdrawDto } from './dto/transaction.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Multer } from 'multer'
 
 @UseGuards(JwtAuthGuard)
 @Controller('transaction')
@@ -9,15 +11,26 @@ export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Post('send') //to withdraw
-  send(@Body() send_dto: SendDTO, @Req() req) {
+  send(@Body() withdrawDto: WithdrawDto, @Req() req) {
     const email = req.user.email
-    return this.transactionService.send(send_dto, email);
+    return this.transactionService.withdraw(withdrawDto, email);
   }
 
-  @Post('recieve') // to recieve
-  recieve(@Body() recieve_dto:RecieveDTO, @Req() req) {
+  @UseInterceptors(FileInterceptor('image', {
+    fileFilter: (req, file, cb) => {
+      if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+        return cb(new BadRequestException('Only image files allowed'), false);
+      }
+      cb(null, true);
+    },
+    limits: {
+      fileSize: 5 * 1024 * 1024, // 5MB limit
+    },
+  }))
+  @Post('recieve') // to deposit
+  recieve(@Body() depositDto:DepositDto, @UploadedFile() image: Multer.File, @Req() req) {
     const email = req.user.email
-    return this.transactionService.recieve(recieve_dto, email);
+    return this.transactionService.deposit(depositDto, email, image);
   }
 
   @Get('histroy')

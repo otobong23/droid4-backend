@@ -15,7 +15,7 @@ export class AuthService {
     if (admin === email && adminPassword === password) {
       return {
         user: { email, password },
-        token: this.jwtService.sign({ email, password }),
+        adminToken: this.jwtService.sign({ email, password }),
         message: 'login successful'
       };
     }
