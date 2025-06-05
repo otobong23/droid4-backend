@@ -36,7 +36,7 @@ export class CryptoService implements OnModuleInit {
   async getPriceUSD(symbol: string): Promise<number> {
     const coinId = this.getCoinIdById(symbol);
     if (!coinId) {
-      throw new Error(`Coin symbol "${symbol}" is not supported.`);
+      throw new NotAcceptableException(`Coin symbol "${symbol}" is not supported.`);
     }
 
     const url = `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`;

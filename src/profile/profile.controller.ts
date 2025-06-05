@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } fro
 import { ProfileService } from './profile.service';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
 import { CryptoService } from 'src/common/helpers/CryptoRate.service';
+import { SwapDto } from './dto/profile.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('profile')
@@ -20,7 +21,7 @@ export class ProfileController {
   }
 
   @Post('crypto/swap')
-  async swap(@Body() swapDto: { from: string, to: string, amount: number }) {
+  async swap(@Body() swapDto: SwapDto) {
     return this.cryptoService.swap(swapDto.from, swapDto.to, swapDto.amount);
   }
 }
