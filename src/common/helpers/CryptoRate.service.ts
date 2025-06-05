@@ -25,7 +25,7 @@ export class CryptoService {
   }
 
   async getPriceUSD(symbol: string): Promise<number> {
-    const coinId = this.getCoinIdById(symbol);
+    const coinId = await this.getCoinIdById(symbol);
     if (!coinId) {
       throw new NotAcceptableException(`Coin symbol "${symbol}" is not supported.`);
     }
