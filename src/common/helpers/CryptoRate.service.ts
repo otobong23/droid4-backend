@@ -1,38 +1,29 @@
 
 //Miracle Boniface
-import { Injectable, InternalServerErrorException, NotAcceptableException, OnModuleInit } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
 import fetch from 'node-fetch';
+// OnModuleInit
 
 @Injectable()
-export class CryptoService implements OnModuleInit {
-  private coinList: { id: string; symbol: string; name: string }[] = [];
-
-  async onModuleInit() {
+export class CryptoService {
+  private async getCoinIdById(id: string): Promise<string | null> {
     try {
       const res = await fetch('https://api.coingecko.com/api/v3/coins/list');
       const coins = await res.json();
 
       if (!Array.isArray(coins)) {
         console.error('Unexpected response from CoinGecko:', coins);
-        return;
+        return null;
       }
 
-      this.coinList = coins;
-      console.log(`Loaded ${coins.length} coins from CoinGecko`);
+      const coin = coins.find(
+        (c) => c.id.toLowerCase() === id.toLowerCase()
+      );
+      return coin ? coin.id : null;
     } catch (error) {
       console.error('Failed to load CoinGecko coin list:', error);
+      return null;
     }
-  }
-
-  private getCoinIdById(id: string): string | null {
-    const coin = this.coinList.find(
-      (c) => c.id.toLowerCase() === id.toLowerCase()
-    );
-    return coin ? coin.id : null;
-  }
-
-  async getCoinList(): Promise<{ id: string; symbol: string; name: string }[]> {
-    return this.coinList;
   }
 
   async getPriceUSD(symbol: string): Promise<number> {
@@ -71,8 +62,8 @@ export class CryptoService implements OnModuleInit {
     toPrice: number;
     timestamp: string;
   }> {
-    const fromId = this.getCoinIdById(from);
-    const toId = this.getCoinIdById(to);
+    const fromId = await this.getCoinIdById(from);
+    const toId = await this.getCoinIdById(to);
 
     if (!fromId) {
       throw new NotAcceptableException(`Coin symbol ${from} is not supported.`);
