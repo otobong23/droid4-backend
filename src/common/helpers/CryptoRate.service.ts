@@ -6,22 +6,20 @@ import fetch from 'node-fetch';
 
 @Injectable()
 export class CryptoService {
-  private async getCoinIdById(id: string): Promise<string | null> {
+  private async getCoinIdById(symbol: string): Promise<string | null> {
     try {
-      const res = await fetch('https://api.coingecko.com/api/v3/coins/list');
-      const coins = await res.json();
+      // Use search API instead of full list - much smaller response
+      const res = await fetch(`https://api.coingecko.com/api/v3/search?query=${symbol}`);
+      const data = await res.json();
 
-      if (!Array.isArray(coins)) {
-        console.error('Unexpected response from CoinGecko:', coins);
-        return null;
-      }
-
-      const coin = coins.find(
-        (c) => c.id.toLowerCase() === id.toLowerCase()
+      const coin = data.coins?.find(
+        (c) => c.id.toLowerCase() === symbol.toLowerCase() ||
+          c.symbol.toLowerCase() === symbol.toLowerCase()
       );
+
       return coin ? coin.id : null;
     } catch (error) {
-      console.error('Failed to load CoinGecko coin list:', error);
+      console.error('Failed to search coin:', error);
       return null;
     }
   }
