@@ -19,8 +19,8 @@ export class ProfileController {
     return { [coin]: price };
   }
 
-  @Post('crypto')
-  swap(@Body() swapDto: { from: string, to: string, amount: number }) {
+  @Post('crypto/swap')
+  async swap(@Body() swapDto: { from: string, to: string, amount: number }) {
     return this.cryptoService.swap(swapDto.from, swapDto.to, swapDto.amount);
   }
 }
