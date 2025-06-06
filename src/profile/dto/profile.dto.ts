@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class ProfileDto {}
 
@@ -13,3 +13,4 @@ export class SwapDto {
    @IsNumber()
    amount: number;
 }
+

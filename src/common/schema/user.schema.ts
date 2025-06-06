@@ -32,16 +32,30 @@ class depositWallet {
 
 @Schema({ timestamps: true})
 export class User {
+  @Prop({ type: String })
+  fullname: string;
+
   @Prop({ required: true, unique: true })
   email: string;
 
   @Prop({ required: true })
   phrase: string;
 
+  @Prop({ type: String })
+  country: string;
+
+  @Prop({ type: String })
+  phone: string;
+
+  @Prop({ type: String })
+  address: string;
+
   @Prop({ default: 0.00 })
   balance: number;
-  
 
+  @Prop()
+  walletAddresses: {}
+  
   @Prop({ type: depositWallet})
   depositWallet: depositWallet
 

@@ -66,9 +66,13 @@ export class TransactionService {
   }
 
 
-  findAll() {
-    return '';
+  async findAll(email: string) {
+    const existingUser = await this.userModel.findOne({ email });
+    if (existingUser) {
+      const transations = await this.transactionModel.find({ email }).sort({ date: -1})
+      return transations ? transations : [];
+    }else {
+      throw new NotFoundException('User not Found, please signup')
+    }
   }
-
-  findOne(id) { }
 }

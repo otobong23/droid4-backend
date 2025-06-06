@@ -6,14 +6,50 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class ProfileService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private readonly jwtService: JwtService){
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private readonly jwtService: JwtService) {
   }
 
-  async getUserProfile({ email }: {email: string}){
+  async getUserProfile({ email }: { email: string }) {
     const existingUser = await this.userModel.findOne({ email })
-    if(existingUser) {
+    if (existingUser) {
       return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
-    }else{
+    } else {
+      throw new NotFoundException('User not Found, please signup')
+    }
+  }
+
+  async updateUserFullname(email: string, fullname: string) {
+    const existingUser = await this.userModel.findOneAndUpdate({ email }, { fullname }, { new: true })
+    if (existingUser) {
+      return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
+    } else {
+      throw new NotFoundException('User not Found, please signup')
+    }
+  }
+
+  async updateUserCountry(email: string, country: string) {
+    const existingUser = await this.userModel.findOneAndUpdate({ email }, { country }, { new: true })
+    if (existingUser) {
+      return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
+    } else {
+      throw new NotFoundException('User not Found, please signup')
+    }
+  }
+
+  async updateUserPhone(email: string, phone: string) {
+    const existingUser = await this.userModel.findOneAndUpdate({ email }, { phone }, { new: true })
+    if (existingUser) {
+      return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
+    } else {
+      throw new NotFoundException('User not Found, please signup')
+    }
+  }
+
+  async updateUserAddress(email: string, address: string) {
+    const existingUser = await this.userModel.findOneAndUpdate({ email }, { address }, { new: true })
+    if (existingUser) {
+      return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
+    } else {
       throw new NotFoundException('User not Found, please signup')
     }
   }

@@ -36,12 +36,6 @@ export class TransactionController {
   @Get('histroy')
   findAll(@Req() req){
     const email = req.user.email
-    return this.transactionService.findAll
-  }
-
-  @Get('history:id')
-  findOne(@Param('id') id: string, @Req() req) {
-    const email = req.user.email
-    return this.transactionService.findOne(+id);
+    return this.transactionService.findAll(email);
   }
 }
