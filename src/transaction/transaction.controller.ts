@@ -36,6 +36,6 @@ export class TransactionController {
   @Get('histroy')
   findAll(@Req() req){
     const email = req.user.email
-    return this.transactionService.findAll(email);
+    return this.transactionService.findUserTransactions(email);
   }
 }

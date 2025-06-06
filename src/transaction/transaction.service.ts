@@ -66,7 +66,7 @@ export class TransactionService {
   }
 
 
-  async findAll(email: string) {
+  async findUserTransactions(email: string) {
     const existingUser = await this.userModel.findOne({ email });
     if (existingUser) {
       const transations = await this.transactionModel.find({ email }).sort({ date: -1})
@@ -74,5 +74,10 @@ export class TransactionService {
     }else {
       throw new NotFoundException('User not Found, please signup')
     }
+  }
+
+  async findAllTransactions() {
+    const transactions = await this.transactionModel.find().sort({ date: -1 });
+    return transactions ? transactions : [];
   }
 }

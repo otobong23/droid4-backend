@@ -53,4 +53,9 @@ export class ProfileService {
       throw new NotFoundException('User not Found, please signup')
     }
   }
+
+  async findAllUsers(){
+    const users = await this.userModel.find()
+    return users ? users : [];
+  }
 }
