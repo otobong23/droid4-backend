@@ -24,19 +24,7 @@ export class SeedController {
   @Post('save')
   async saveSeed(@Body() body: ValidateSeedDto) {
     const { email, phrase } = body;
-
-    try {
-      const user = await this.seedService.findByEmail(email);
-      if (user) {
-        throw new BadRequestException('User Already exists');
-      }
-
-      await this.seedService.storeSeed(email, phrase);
-
-      return { message: 'Seed phrase saved successfully' };
-    } catch (error) {
-      throw new BadRequestException('Seed saving failed:', error);
-    }
+    return this.seedService.storeSeed(email, phrase)
   }
 
 

@@ -15,7 +15,7 @@ export class SeedService {
     return bip39.generateMnemonic();
   }
 
-  async storeSeed(email: string, phrase: string): Promise<void> {
+  async storeSeed(email: string, phrase: string): Promise<{ message: string }> {
     const existing = await this.userModel.findOne({ email });
     if (existing) {
       throw new ConflictException('Seed phrase already exists for this email');
@@ -26,6 +26,8 @@ export class SeedService {
     // const hashed = await bcrypt.hash(cleanPhrase, 10);
     const newUser = new this.userModel({ email, phrase: cleanPhrase });
     await newUser.save();
+
+    return { message: 'Seed phrase saved successfully' }
   }
 
   async validateSeed(email: string, inputPhrase: string): Promise<{ email: string, phrase: string, token: string } | false> {
