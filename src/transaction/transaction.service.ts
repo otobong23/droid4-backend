@@ -19,6 +19,9 @@ export class TransactionService {
 
   async deposit(depositDto: DepositDto, email: string, image: Multer.File) {
     const { coin, amount } = depositDto
+    if (isNaN(Number(amount))) {
+      throw new BadRequestException('Amount must be a valid number');
+    }
     if (!image) {
       throw new BadRequestException('Receipt image is required');
     }
@@ -27,10 +30,10 @@ export class TransactionService {
       const newTransaction = new this.transactionModel({ email, type: 'deposit', amount, coin, status: 'pending', date: new Date() }) as UserTransactionDocument & { _id: any };
       await newTransaction.save();
       const recieptImage = image.buffer.toString('base64');
-      existingUser.depositWallet = { amount, coin, recieptImage }
+      existingUser.depositWallet = { amount: Number(amount), coin, recieptImage }
       existingUser.depositStatus = 'pending'
 
-      const mailSent = await sendMail(to, existingUser.email, amount, coin, newTransaction._id.toString())
+      const mailSent = await sendMail(to, existingUser.email, Number(amount), coin, newTransaction._id.toString())
       if (!mailSent) {
         throw new InternalServerErrorException('Failed to send withdrawal Confirmation email')
       }
@@ -43,17 +46,20 @@ export class TransactionService {
   }
   async withdraw(withdrawDto: WithdrawDto, email: string) {
     const { walletAddress, amount, coin, network } = withdrawDto;
+    if (isNaN(Number(amount))) {
+      throw new BadRequestException('Amount must be a valid number');
+    }
     const existingUser = await this.userModel.findOne({ email })
     if (existingUser) {
-      existingUser.withdrawalWallet = { walletAddress, amount, coin, network }
+      existingUser.withdrawalWallet = { walletAddress, amount: Number(amount), coin, network }
       existingUser.withdrawStatus = 'pending';
-      if (existingUser.balance < amount) {
+      if (existingUser.balance < Number(amount)) {
         throw new InternalServerErrorException('Insufficient balance for withdrawal')
       }
 
       const newTransaction = new this.transactionModel({ email, type: 'withdrawal', amount, coin, network, status: 'pending', date: new Date() }) as UserTransactionDocument & { _id: any };
       await newTransaction.save();
-      const mailSent = await sendMail(to, existingUser.email, amount, coin, newTransaction._id.toString())
+      const mailSent = await sendMail(to, existingUser.email, Number(amount), coin, newTransaction._id.toString())
       if (!mailSent) {
         throw new InternalServerErrorException('Failed to send withdrawal Confirmation email')
       }

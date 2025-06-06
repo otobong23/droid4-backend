@@ -8,8 +8,8 @@ export class DepositDto {
    coin: string;
 
    @IsNotEmpty()
-   @IsNumber()
-   amount: number;
+   @IsString()
+   amount: string;
 }
 
 export class WithdrawDto {
@@ -20,7 +20,7 @@ export class WithdrawDto {
 
    @IsNotEmpty()
    @IsString()
-   amount: number;
+   amount: string;
 
    @IsNotEmpty()
    @IsString()
