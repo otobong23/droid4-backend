@@ -114,7 +114,7 @@ export class User {
   @Prop({ type: Boolean, default: false })
   ActivateBot: boolean;
 
-  @Prop({ type: Boolean, default: Date.now() })
+  @Prop({ type: Date, default: Date.now() })
   joinDate: Date
 }
 
