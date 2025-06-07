@@ -107,6 +107,15 @@ export class User {
 
   @Prop({ type: ['pending', 'completed', 'failed'] })
   withdrawStatus: 'pending' | 'completed' | 'failed'
+
+  @Prop({ type: Boolean, default: false })
+  isVerified: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  ActivateBot: boolean;
+
+  @Prop({ type: Boolean, default: Date.now() })
+  joinDate: Date
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
