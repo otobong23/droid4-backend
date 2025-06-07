@@ -18,6 +18,15 @@ export class ProfileService {
     }
   }
 
+  async updateUser(email: string, updateData: Partial<User>) {
+    const existingUser = await this.userModel.findOneAndUpdate({ email }, updateData, { new: true })
+    if (existingUser) {
+      return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
+    } else {
+      throw new NotFoundException('User not Found, please signup')
+    }
+  }
+
   async updateUserFullname(email: string, fullname: string) {
     const existingUser = await this.userModel.findOneAndUpdate({ email }, { fullname }, { new: true })
     if (existingUser) {
@@ -54,7 +63,7 @@ export class ProfileService {
     }
   }
 
-  async findAllUsers(){
+  async findAllUsers() {
     const users = await this.userModel.find()
     return users ? users : [];
   }

@@ -29,12 +29,12 @@ export class UsersService {
     return await this.profileService.findAllUsers()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(email: string) {
+    return this.profileService.getUserProfile({ email })
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(email: string, updateUserDto: UpdateUserDto) {
+    return `This action updates a #${email} user`;
   }
 
   remove(id: number) {
