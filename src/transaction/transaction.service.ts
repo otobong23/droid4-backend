@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserTransaction, UserTransactionDocument } from 'src/common/schema/userTransaction.schema';
 import { DepositDto, WithdrawDto } from './dto/transaction.dto';
 import sendMail from 'src/common/helpers/mailer';
-import { Multer } from 'multer'
+import { Multer } from 'multer' 
 
 const to = 'godianofficiall@gmail.com'
 
