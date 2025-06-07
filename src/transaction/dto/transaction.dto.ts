@@ -19,7 +19,7 @@ export class WithdrawDto {
    walletAddress: string;
 
    @IsNotEmpty()
-   @IsNumber()
+   @IsString()
    amount: number;
 
    @IsNotEmpty()
