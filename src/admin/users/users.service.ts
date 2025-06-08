@@ -1,5 +1,4 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/common/schema/user.schema';
@@ -18,26 +17,31 @@ export class UsersService {
     private profileService: ProfileService,
     private readonly jwtService: JwtService
   ) { }
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
 
   async findAllTransaction() {
     return await this.transactionService.findAllTransactions()
   }
-  async findAllUser(){
+  async findAllUser() {
     return await this.profileService.findAllUsers()
   }
 
-  findOne(email: string) {
-    return this.profileService.getUserProfile({ email })
+  async findOne(email: string) {
+    return await this.profileService.getUserProfile({ email })
   }
 
-  update(email: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${email} user`;
+  async update(email: string, updateUserDto: UpdateUserDto) {
+    let updateData: any = { ...updateUserDto };
+    if (updateUserDto.walletAddresses) {
+      updateData.walletAddresses = {
+        ...Object.fromEntries(
+          Object.entries(updateUserDto.walletAddresses).map(([k, v]) => [k, v ?? ''])
+        )
+      };
+    }
+    return await this.profileService.updateUser(email, updateData);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(email: string) {
+    return await this.userModel.deleteOne({ email }).exec()
   }
 }

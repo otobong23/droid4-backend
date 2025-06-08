@@ -18,7 +18,7 @@ export class ProfileService {
     }
   }
 
-  async updateUser(email: string, updateData: Partial<User>) {
+  async updateUser(email: string, updateData: Partial<User>) { 
     const existingUser = await this.userModel.findOneAndUpdate({ email }, updateData, { new: true })
     if (existingUser) {
       return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }

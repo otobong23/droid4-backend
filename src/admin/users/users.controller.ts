@@ -10,10 +10,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
   @Get('transactions')
   async findAll() {
     return await this.usersService.findAllTransaction();
@@ -30,12 +26,12 @@ export class UsersController {
   }
 
   @Patch(':email')
-  update(@Param('id') email: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(email, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Delete(':email')
+  remove(@Param('email') email: string) {
+    return this.usersService.remove(email);
   }
 }
