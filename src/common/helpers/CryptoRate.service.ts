@@ -80,7 +80,7 @@ export class CryptoService {
 
       const fromPrice = data?.[fromId]?.usd;
       const toPrice = data?.[toId]?.usd;
-      return { fromPrice, toPrice}
+      return { fromPrice, toPrice, data}
 
       // if (!fromPrice || !toPrice) {
       //   throw new InternalServerErrorException('Failed to retrieve prices for swap');
