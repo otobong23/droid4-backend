@@ -53,14 +53,14 @@ export class CryptoService {
     to: string,
     amount: number
   )
-  // : Promise<{
-  //   result: number;
-  //   fromSymbol: string;
-  //   toSymbol: string;
-  //   fromPrice: number;
-  //   toPrice: number;
-  //   timestamp: string;
-  // }> 
+  : Promise<{
+    result: number;
+    fromSymbol: string;
+    toSymbol: string;
+    fromPrice: number;
+    toPrice: number;
+    timestamp: string;
+  }> 
   {
     const fromId = await this.getCoinIdById(from);
     const toId = await this.getCoinIdById(to);
@@ -80,22 +80,20 @@ export class CryptoService {
 
       const fromPrice = data?.[fromId]?.usd;
       const toPrice = data?.[toId]?.usd;
-      return { fromPrice, toPrice, data}
+      if (!fromPrice || !toPrice) {
+        throw new InternalServerErrorException('Failed to retrieve prices for swap');
+      }
 
-      // if (!fromPrice || !toPrice) {
-      //   throw new InternalServerErrorException('Failed to retrieve prices for swap');
-      // }
+      const result = (amount * fromPrice) / toPrice;
 
-      // const result = (amount * fromPrice) / toPrice;
-
-      // return {
-      //   result,
-      //   fromSymbol: from.toLowerCase(),
-      //   toSymbol: to.toLowerCase(),
-      //   fromPrice,
-      //   toPrice,
-      //   timestamp: new Date().toISOString(),
-      // };
+      return {
+        result,
+        fromSymbol: from.toLowerCase(),
+        toSymbol: to.toLowerCase(),
+        fromPrice,
+        toPrice,
+        timestamp: new Date().toISOString(),
+      };
     } catch (err) {
       console.error('Error fetching prices from CoinGecko:', err);
       throw new InternalServerErrorException('Failed to perform swap');

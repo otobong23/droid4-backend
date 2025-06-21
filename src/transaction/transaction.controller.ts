@@ -2,8 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseI
 import { TransactionService } from './transaction.service';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
 import { DepositDto, WithdrawDto } from './dto/transaction.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Multer } from 'multer'
 
 @UseGuards(JwtAuthGuard)
 @Controller('transaction')
@@ -16,21 +14,10 @@ export class TransactionController {
     return this.transactionService.withdraw(withdrawDto, email);
   }
 
-  @UseInterceptors(FileInterceptor('image', {
-    fileFilter: (req, file, cb) => {
-      if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
-        return cb(new BadRequestException('Only image files allowed'), false);
-      }
-      cb(null, true);
-    },
-    limits: {
-      fileSize: 5 * 1024 * 1024, // 5MB limit
-    },
-  }))
   @Post('recieve') // to deposit
-  recieve(@Body() depositDto:DepositDto, @UploadedFile() image: Multer.File, @Req() req) {
+  recieve(@Body() depositDto:DepositDto, @Req() req) {
     const email = req.user.email
-    return this.transactionService.deposit(depositDto, email, image);
+    return this.transactionService.deposit(depositDto, email);
   }
 
   @Get('histroy')

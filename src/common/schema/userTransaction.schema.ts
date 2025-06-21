@@ -23,6 +23,12 @@ export class UserTransaction {
   @Prop({ default: null })
   network: string;
 
+  @Prop({ type: String })
+  image: string
+
+  @Prop({ type: String })
+  withdrawWalletAddress: string
+
   @Prop({ type: Date })
   date: Date;
 }

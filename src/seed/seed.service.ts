@@ -1,9 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, RequestTimeoutException } from '@nestjs/common';
 import * as bip39 from 'bip39';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../common/schema/user.schema'; // ✅ correct model
 import { JwtService } from '@nestjs/jwt';
+import { sendActivationMail } from 'src/common/helpers/mailer';
 
 @Injectable()
 export class SeedService {
@@ -54,4 +55,48 @@ export class SeedService {
   async findByEmail(email: string) {
     return this.userModel.findOne({ email })
   }
+
+
+  //sendCode service functionalities
+  //start
+  async sendCode(email) {
+    const existingUser = await this.userModel.findOne({ email });
+    if (!existingUser) throw new NotFoundException("User doesn't exists");
+    const code = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    const info = await sendActivationMail(email, existingUser.email, code)
+    if (!info) {
+      throw new InternalServerErrorException(`Failed to send to Code to ${email}`)
+    }
+    existingUser.activationCode = code
+    existingUser.activationCodeValidation = Date.now()
+    existingUser.save()
+
+    return { message: 'Code Sent Successfully!' }
+  }
+  //end
+
+  //verifyCode service functionalities
+  //start
+  async verifyCode(email, code) {
+    const existingUser = await this.userModel.findOne({ email }).select('+activationCode +activationCodeValidation')
+    if (!existingUser) {
+      throw new NotFoundException("User doesn't exists");
+    }
+    if (!existingUser.activationCode || !existingUser.activationCodeValidation) {
+      throw new InternalServerErrorException('Something Went Wrong')
+    }
+    if (Date.now() - new Date(existingUser.activationCodeValidation).getTime() > 10 * 60 * 1000) {
+      throw new RequestTimeoutException('Code Has Been Expired!')
+    }
+    if (code === existingUser.activationCode) {
+      existingUser.activationCode = undefined
+      existingUser.activationCodeValidation = undefined
+      await existingUser.save()
+      const token = this.jwtService.sign({ email }, { expiresIn: '10m' });
+      return { token }
+    } else {
+      throw new ConflictException('Code is Invalid')
+    }
+  }
+  //end
 }
