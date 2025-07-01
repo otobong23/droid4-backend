@@ -18,7 +18,7 @@ export class ProfileService {
     }
   }
 
-  async updateUser(email: string, updateData: Partial<User>) { 
+  async updateUser(email: string, updateData: Partial<User>) {
     const existingUser = await this.userModel.findOneAndUpdate({ email }, updateData, { new: true })
     if (existingUser) {
       return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
@@ -56,6 +56,42 @@ export class ProfileService {
 
   async updateUserAddress(email: string, address: string) {
     const existingUser = await this.userModel.findOneAndUpdate({ email }, { address }, { new: true })
+    if (existingUser) {
+      return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
+    } else {
+      throw new NotFoundException('User not Found, please signup')
+    }
+  } 
+
+  async updateVerification(email: string, verificationStatus: 'pending' | 'verified') {
+    const existingUser = await this.userModel.findOneAndUpdate({ email }, { verificationStatus }, { new: true })
+    if (existingUser) {
+      return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
+    } else {
+      throw new NotFoundException('User not Found, please signup')
+    }
+  }
+
+  async updateKYC(email: string, KYC: string) {
+    const existingUser = await this.userModel.findOneAndUpdate({ email }, { KYC, KYCVerificationStatus: 'pending' }, { new: true })
+    if (existingUser) {
+      return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
+    } else {
+      throw new NotFoundException('User not Found, please signup')
+    }
+  }
+
+  async updateKYCVerified(email: string, KYCVerified: boolean) {
+    const existingUser = await this.userModel.findOneAndUpdate({ email }, { KYCVerified }, { new: true })
+    if (existingUser) {
+      return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
+    } else {
+      throw new NotFoundException('User not Found, please signup')
+    }
+  }
+
+  async updateKYCVerificationStatus(email: string, KYCVerificationStatus: 'verified' | 'pending' | 'unverified') {
+    const existingUser = await this.userModel.findOneAndUpdate({ email }, { KYCVerificationStatus }, { new: true })
     if (existingUser) {
       return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
     } else {

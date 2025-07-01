@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
 
-@Schema({ timestamps: true })
+@Schema({ _id: false })
 class withdrawalWallet {
   @Prop() walletAddress: string;
   @Prop() amount: number;
@@ -11,14 +11,14 @@ class withdrawalWallet {
   @Prop() network: string;
 }
 
-@Schema({ timestamps: true })
+@Schema({ _id: false })
 class depositWallet {
   @Prop() amount: number;
   @Prop() coin: string;
   @Prop() recieptImage: string;
 }
 
-@Schema()
+@Schema({ _id: false })
 export class USDTAddress {
   @Prop() name: string;
   @Prop() address: string;
@@ -26,14 +26,14 @@ export class USDTAddress {
 }
 export const USDTAddressSchema = SchemaFactory.createForClass(USDTAddress);
 
-@Schema()
+@Schema({ _id: false })
 export class WalletItem {
   @Prop() address: string;
   @Prop({ default: 0 }) balance: number;
 }
 const WalletItemSchema = SchemaFactory.createForClass(WalletItem);
 
-@Schema()
+@Schema({ _id: false })
 export class Wallet {
   @Prop({ type: WalletItemSchema, default: () => ({ address: "bc1q2v4cjsmeg05shfk28stvc74dy8cfa2k2j32hlp" }) }) BTC: WalletItem;
   @Prop({ type: WalletItemSchema, default: () => ({ address: "0x464B0007a2A4C29912f0fb3EB8A15831961890CF" }) }) ETH: WalletItem;
@@ -79,16 +79,21 @@ export class User {
   wallet: Wallet;
 
   @Prop({ type: depositWallet }) depositWallet: depositWallet;
-  @Prop({ type: ['pending', 'completed', 'failed'] }) depositStatus: 'pending' | 'completed' | 'failed';
+  @Prop({ type: String, enum: ['pending', 'completed', 'failed'] }) depositStatus: 'pending' | 'completed' | 'failed';
 
   @Prop({ type: withdrawalWallet }) withdrawalWallet: withdrawalWallet;
-  @Prop({ type: ['pending', 'completed', 'failed'] }) withdrawStatus: 'pending' | 'completed' | 'failed';
+  @Prop({ type: String, enum: ['pending', 'completed', 'failed'] }) withdrawStatus: 'pending' | 'completed' | 'failed';
 
   @Prop({ type: Boolean, default: false }) isVerified: boolean;
+  @Prop({ type: String, enum: ['verified', 'pending', 'unverified'], default: 'unverified' }) verificationStatus: 'verified' | 'pending' | 'unverified';
   @Prop({ type: Boolean, default: false }) activation: false;
 
   @Prop({ type: String, select: false, default: undefined }) activationCode?: string;
   @Prop({ type: Number, select: false, default: undefined }) activationCodeValidation?: number;
+
+  @Prop({ type: String, default: undefined }) KYC?: string;
+  @Prop({ type: Boolean, default: false }) KYCVerified: boolean
+  @Prop({ type: String, enum: ['verified', 'pending', 'unverified'], default: 'unverified' }) KYCVerificationStatus: 'verified' | 'pending' | 'unverified'
 
   @Prop({ type: Boolean, default: false }) ActivateBot: boolean;
   @Prop({ type: Date, default: Date.now() }) joinDate: Date;

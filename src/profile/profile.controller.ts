@@ -22,7 +22,7 @@ export class ProfileController {
   @Patch('country')
   async updateCountry(@Req() req, @Body('country') country: string) {
     return this.profileService.updateUserCountry(req.user.email, country)
-  }
+  } 
 
   @Patch('phone')
   async updatePhone(@Req() req, @Body('phone') phone: string) {
@@ -32,6 +32,26 @@ export class ProfileController {
   @Patch('address')
   async updateAddress(@Req() req, @Body('address') address: string) {
     return this.profileService.updateUserAddress(req.user.email, address)
+  }
+
+  @Patch('verificationStatus')
+  async verificationStatus(@Req() req, @Body('verificationStatus') verificationStatus: 'pending' | 'verified') {
+    return this.profileService.updateVerification(req.user.email, verificationStatus)
+  }
+
+  @Patch('KYC')
+  async KYC(@Req() req, @Body('KYC') KYC: string) {
+    return this.profileService.updateKYC(req.user.email, KYC)
+  }
+
+  @Patch('KYCVerified')
+  async KYCVerified(@Req() req, @Body('KYCVerified') KYCVerified: boolean) {
+    return this.profileService.updateKYCVerified(req.user.email, KYCVerified)
+  }
+
+  @Patch('KYCVerificationStatus')
+  async KYCVerificationStatus(@Req() req, @Body('KYCVerificationStatus') KYCVerificationStatus: 'pending' | 'verified') {
+    return this.profileService.updateKYCVerificationStatus(req.user.email, KYCVerificationStatus)
   }
 
   @Get('crypto/:coin')

@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, RequestTimeoutException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException, RequestTimeoutException } from '@nestjs/common';
 import * as bip39 from 'bip39';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -53,7 +53,10 @@ export class SeedService {
   }
 
   async findByEmail(email: string) {
-    return this.userModel.findOne({ email })
+    if(!email) throw new ForbiddenException('email is needed')
+    const existingUser = await this.userModel.findOne({ email })
+    if(existingUser) throw new ConflictException('User Already Exist')
+    return true
   }
 
 
@@ -62,6 +65,7 @@ export class SeedService {
   async sendCode(email) {
     const existingUser = await this.userModel.findOne({ email });
     if (!existingUser) throw new NotFoundException("User doesn't exists");
+    if (existingUser.isVerified) throw new ConflictException('User Is already Verified')
     const code = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
     const info = await sendActivationMail(email, existingUser.email, code)
     if (!info) {
@@ -91,9 +95,10 @@ export class SeedService {
     if (code === existingUser.activationCode) {
       existingUser.activationCode = undefined
       existingUser.activationCodeValidation = undefined
+      existingUser.isVerified = true
+      existingUser.verificationStatus = 'verified'
       await existingUser.save()
-      const token = this.jwtService.sign({ email }, { expiresIn: '10m' });
-      return { token }
+      return { message: 'Your Email has been verified successfully' }
     } else {
       throw new ConflictException('Code is Invalid')
     }
