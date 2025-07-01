@@ -17,11 +17,14 @@ export class UserTransaction {
   @Prop({ default: 'pending', enum: ['pending', 'completed', 'failed'] })
   status: string;
 
-  @Prop()
+  @Prop({ type: String })
   Coin: string; // e.g. 'USDT', 'BTC'
 
   @Prop({ default: null })
   network: string;
+
+  @Prop({ type: String })
+  note: string
 
   @Prop({ type: String })
   image: string

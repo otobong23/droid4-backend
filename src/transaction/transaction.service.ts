@@ -56,7 +56,7 @@ export class TransactionService {
 
       // Validate sufficient balance
       if (userCoinWallet.balance < Number(amount)) {
-        throw new NotAcceptableException('Insufficient balance for withdrawal');
+        throw new NotAcceptableException(`Insufficient balance for withdrawal for ${coin}`);
       }
 
       existingUser.withdrawalWallet = { walletAddress, amount, coin, network };
