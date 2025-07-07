@@ -20,7 +20,7 @@ export class TransactionController {
     return this.transactionService.deposit(depositDto, email);
   }
 
-  @Get('histroy')
+  @Get('history')
   findAll(@Req() req){
     const email = req.user.email
     return this.transactionService.findUserTransactions(email);

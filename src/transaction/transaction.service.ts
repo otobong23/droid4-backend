@@ -18,15 +18,15 @@ export class TransactionService {
 
 
   async deposit(depositDto: DepositDto, email: string) {
-    const { coin, amount, image } = depositDto
+    const { Coin, amount, image } = depositDto
     const existingUser = await this.userModel.findOne({ email })
     if (!existingUser) throw new NotFoundException('User not Found, please signup');
-    existingUser.depositWallet = { amount, coin, recieptImage: image }
+    existingUser.depositWallet = { amount, coin: Coin, recieptImage: image }
     existingUser.depositStatus = 'pending'
-    const newTransaction = new this.transactionModel({ email, type: 'deposit', amount, coin, status: 'pending', image, date: new Date() }) as UserTransactionDocument & { _id: any };
+    const newTransaction = new this.transactionModel({ email, type: 'deposit', amount, Coin, status: 'pending', image, date: new Date() }) as UserTransactionDocument & { _id: any };
     await existingUser.save()
     await newTransaction.save();
-    const mailSent = await sendMail(to, existingUser.email, amount, coin, newTransaction._id.toString())
+    const mailSent = await sendMail(to, existingUser.email, amount, Coin, newTransaction._id.toString())
     if (!mailSent) {
       throw new InternalServerErrorException('Failed to send withdrawal Confirmation email')
     }

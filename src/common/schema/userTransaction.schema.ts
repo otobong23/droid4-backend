@@ -8,13 +8,13 @@ export class UserTransaction {
   @Prop({ type: String, ref: 'user', required: true })
   email: string;
 
-  @Prop({ required: true, enum: ['deposit', 'withdrawal'] })
+  @Prop({ required: true, enum: ['deposit', 'withdrawal', 'plans', 'yield'] })
   type: string;
 
   @Prop({ required: true })
   amount: number;
 
-  @Prop({ default: 'pending', enum: ['pending', 'completed', 'failed'] })
+  @Prop({ default: 'pending', enum: ['pending', 'completed', 'failed'] }) 
   status: string;
 
   @Prop({ type: String })
