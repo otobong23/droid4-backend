@@ -33,10 +33,7 @@ export class SeedService {
 
   async validateSeed(email: string, inputPhrase: string): Promise<{ email: string, phrase: string, token: string } | false> {
     const record = await this.userModel.findOne({ email });
-    if (!record) {
-      console.log('❌ No record found for email:', email);
-      return false;
-    }
+    if (!record) throw new NotFoundException('No record found for email:' + email);
     const cleanInput = this.normalize(inputPhrase);
 
     console.log('🔐 Clean input:', cleanInput);

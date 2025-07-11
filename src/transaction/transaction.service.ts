@@ -70,7 +70,7 @@ export class TransactionService {
       email,
       type: 'withdrawal',
       amount,
-      coin,
+      Coin: coin,
       network,
       status: 'pending',
       withdrawWalletAddress: walletAddress,
@@ -81,11 +81,11 @@ export class TransactionService {
 
     // Send confirmation email
     const mailSent = await sendMail(
-      'withdraw', // assuming this is your template ID or subject
+      to,
       existingUser.email,
-      Number(amount),
+      amount,
       coin,
-      newTransaction._id.toString()
+      newTransaction.id.toString()
     );
 
     if (!mailSent) {
