@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateAdminDto, UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/common/schema/user.schema';
 import { Model } from 'mongoose';
@@ -8,12 +8,14 @@ import { UserTransaction, UserTransactionDocument } from 'src/common/schema/user
 import { TransactionService } from 'src/transaction/transaction.service';
 import { ProfileService } from 'src/profile/profile.service';
 import { UpdateTransactionDto } from 'src/transaction/dto/update-transaction.dto';
+import { Admin, AdminDocument } from 'src/common/schema/admin.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(UserTransaction.name) private transactionModel: Model<UserTransactionDocument>,
+    @InjectModel(Admin.name) private adminSchemaModel: Model<AdminDocument>,
     private transactionService: TransactionService,
     private profileService: ProfileService,
     private readonly jwtService: JwtService
@@ -54,6 +56,18 @@ export class UsersService {
       };
     }
     return await this.profileService.updateUser(email, updateData);
+  }
+
+  async updateAmin(updateAdminDto: UpdateAdminDto){
+    const admin = await this.adminSchemaModel.findOneAndUpdate({}, updateAdminDto, { new: true });
+    if (!admin) throw new NotFoundException('Admin not found');
+    return admin;
+  }
+
+  async getAdmin() {
+    const admin = await this.adminSchemaModel.findOne();
+    if (!admin) throw new NotFoundException('Admin not found');
+    return admin;
   }
 
   async remove(email: string) {

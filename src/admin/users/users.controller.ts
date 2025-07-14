@@ -1,13 +1,23 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateAdminDto, UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('admin')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
- 
+  constructor(private readonly usersService: UsersService) { }
+
+  @Get()
+  async getAdmin(){
+    return await this.usersService.getAdmin()
+  }
+
+  @Patch()
+  async updateAdmin(@Body() updateAdminDto: UpdateAdminDto) {
+    return this.usersService.updateAmin(updateAdminDto);
+  }
+
   @Get('transactions')
   async findAll() {
     return await this.usersService.findAllTransaction();
@@ -19,7 +29,7 @@ export class UsersController {
   }
 
   @Get('users')
-  async findAllUsers(){
+  async findAllUsers() {
     return await this.usersService.findAllUser()
   }
 

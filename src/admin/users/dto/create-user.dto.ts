@@ -163,3 +163,30 @@ export class CreateUserDto {
    @IsOptional()
    joinDate?: Date;
 }
+
+export class AdminDto {
+   @IsString()
+   @IsOptional()
+   password: string;
+
+   @IsNumber()
+   @IsOptional()
+   minDepositAmount: number
+
+   @IsNumber()
+   @IsOptional()
+   maxDepositAmount: number
+
+   @IsNumber()
+   @IsOptional()
+   minWithdrawalAmount: number
+
+   @IsNumber()
+   @IsOptional()
+   maxWithdrawalAmount: number
+
+   @IsOptional()
+   @ValidateNested()
+   @Type(() => WalletAddressesDto)
+   addresses: WalletAddressesDto
+}

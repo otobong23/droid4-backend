@@ -6,13 +6,15 @@ import { UserTransactionModule } from 'src/common/schema/userTransaction.module'
 import { JwtStrategy } from 'src/common/jwt/jwt.strategy';
 import { ProfileModule } from 'src/profile/profile.module';
 import { TransactionModule } from 'src/transaction/transaction.module';
+import { AdminSchemaModule } from 'src/common/schema/adminSchema.module';
 
 @Module({
   imports: [
     UserModule,
     UserTransactionModule,
     ProfileModule,
-    TransactionModule
+    TransactionModule,
+    AdminSchemaModule
   ],
   controllers: [UsersController],
   providers: [UsersService, JwtStrategy],

