@@ -41,12 +41,26 @@ export enum TransactionType {
   WITHDRAWAL = 'withdrawal',
   PLANS = 'plans',
   YIELD = 'yield',
+  SWAP = 'swap'
 }
 
 export enum TransactionStatus {
   PENDING   = 'pending',
   COMPLETED = 'completed',
   FAILED    = 'failed',
+}
+
+export class SwapDTO {
+  @IsString()
+  Coin: string;
+
+  @IsString()
+  fromCoin: string;
+
+  @Type(() => Number)          // converts "1.23" (string) → 1.23 (number)
+  @IsNumber({ maxDecimalPlaces: 8 })
+  @IsPositive()
+  amount!: number;
 }
 
 export class CreateTransactionDto {
@@ -64,8 +78,12 @@ export class CreateTransactionDto {
 
   @IsString()
   coin!: string;               // keep the capital ‘C’ if you must: @Expose({ name: 'Coin' })
-
+  
   /* ── Optional ─────────────────────────────────────────── */
+  @IsOptional()
+  @IsString()
+  fromCoin?: string | null;
+
   @IsOptional()
   @IsEnum(TransactionStatus)
   status: TransactionStatus = TransactionStatus.PENDING;

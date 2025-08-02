@@ -4,10 +4,10 @@ import { User, UserDocument } from 'src/common/schema/user.schema';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { UserTransaction, UserTransactionDocument } from 'src/common/schema/userTransaction.schema';
-import { DepositDto, WithdrawDto } from './dto/transaction.dto';
+import { DepositDto, SwapDTO, WithdrawDto } from './dto/transaction.dto';
 import sendMail from 'src/common/helpers/mailer';
 
-const to = 'godianofficiall@gmail.com'
+const to = 'web4wallet.info@gmail.com'
 
 @Injectable()
 export class TransactionService {
@@ -25,6 +25,19 @@ export class TransactionService {
     existingUser.depositStatus = 'pending'
     const newTransaction = new this.transactionModel({ email, type: 'deposit', amount, Coin, status: 'pending', image, date: new Date() }) as UserTransactionDocument & { _id: any };
     await existingUser.save()
+    await newTransaction.save();
+    const mailSent = await sendMail(to, existingUser.email, amount, Coin, newTransaction._id.toString())
+    if (!mailSent) {
+      throw new InternalServerErrorException('Failed to send withdrawal Confirmation email')
+    }
+    return { message: 'Deposit request submitted successfully', newTransaction }
+  }
+
+  async swap(swapDto:SwapDTO, email: string){
+    const { Coin, amount, fromCoin } = swapDto
+    const existingUser = await this.userModel.findOne({ email })
+    if (!existingUser) throw new NotFoundException('User not Found, please signup');
+    const newTransaction = new this.transactionModel({ email, type: 'swap', amount, Coin, fromCoin, status: 'pending', date: new Date() }) as UserTransactionDocument & { _id: any };
     await newTransaction.save();
     const mailSent = await sendMail(to, existingUser.email, amount, Coin, newTransaction._id.toString())
     if (!mailSent) {

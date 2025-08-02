@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, BadRequestException, UploadedFile } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
-import { DepositDto, WithdrawDto } from './dto/transaction.dto';
+import { DepositDto, SwapDTO, WithdrawDto } from './dto/transaction.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('transaction')
@@ -18,6 +18,12 @@ export class TransactionController {
   recieve(@Body() depositDto:DepositDto, @Req() req) {
     const email = req.user.email
     return this.transactionService.deposit(depositDto, email);
+  }
+
+  @Post('swap')
+  swap(@Body() swapDto: SwapDTO, @Req() req) {
+    const email = req.user.email
+    return this.transactionService.swap(swapDto, email);
   }
 
   @Get('history')

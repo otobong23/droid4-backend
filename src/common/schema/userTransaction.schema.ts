@@ -8,17 +8,20 @@ export class UserTransaction {
   @Prop({ type: String, ref: 'user', required: true })
   email: string;
 
-  @Prop({ required: true, enum: ['deposit', 'withdrawal', 'plans', 'yield'] })
+  @Prop({ required: true, enum: ['deposit', 'withdrawal', 'plans', 'yield', 'swap'] })
   type: string;
 
   @Prop({ required: true })
   amount: number;
 
-  @Prop({ default: 'pending', enum: ['pending', 'completed', 'failed'] }) 
+  @Prop({ default: 'pending', enum: ['pending', 'completed', 'failed'] })
   status: string;
 
   @Prop({ type: String })
   Coin: string; // e.g. 'USDT', 'BTC'
+
+  @Prop({ type: String })
+  fromCoin
 
   @Prop({ default: null })
   network: string;
