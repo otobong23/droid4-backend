@@ -33,7 +33,7 @@ export class TransactionService {
     return { message: 'Deposit request submitted successfully', newTransaction }
   }
 
-  async swap(swapDto:SwapDTO, email: string){
+  async swap(swapDto: SwapDTO, email: string) {
     const { Coin, amount, fromCoin } = swapDto
     const existingUser = await this.userModel.findOne({ email })
     if (!existingUser) throw new NotFoundException('User not Found, please signup');
@@ -113,13 +113,30 @@ export class TransactionService {
     };
   }
 
-
-
-  async findUserTransactions(email: string) {
+  async findUserTransactions(email: string, limit: number = 50, page: number = 1) {
     const existingUser = await this.userModel.findOne({ email });
     if (existingUser) {
-      const transations = await this.transactionModel.find({ email }).sort({ date: -1 })
-      return transations ? transations : [];
+      limit = Math.max(1, Math.min(limit, 100))
+      page = Math.max(1, page)
+      const offset = (page - 1) * limit;
+      const [transactions, total] = await Promise.all([
+        this.transactionModel.find({ email })
+          .sort({ date: -1 })
+          .limit(limit)
+          .skip(offset)
+          .exec(),
+        this.transactionModel.countDocuments()
+      ]);
+      const totalPages = total === 0 ? 1 : Math.ceil(total / limit);
+      return ({
+        success: true, message: 'Transactions gotten successfully', data: {
+          transactions,
+          page,
+          limit,
+          totalPages,
+          total
+        }
+      })
     } else {
       throw new NotFoundException('User not Found, please signup')
     }

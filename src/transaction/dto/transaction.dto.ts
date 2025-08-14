@@ -41,7 +41,9 @@ export enum TransactionType {
   WITHDRAWAL = 'withdrawal',
   PLANS = 'plans',
   YIELD = 'yield',
-  SWAP = 'swap'
+  SWAP = 'swap',
+  BUY = 'buy',
+  SELL = 'sell'
 }
 
 export enum TransactionStatus {

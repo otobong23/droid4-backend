@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, BadRequestException, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, BadRequestException, UploadedFile, Query, ParseIntPipe } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
 import { DepositDto, SwapDTO, WithdrawDto } from './dto/transaction.dto';
@@ -27,8 +27,12 @@ export class TransactionController {
   }
 
   @Get('history')
-  findAll(@Req() req){
+  findAll(
+    @Req() req,
+    @Query('limit', ParseIntPipe) limit = 50,
+    @Query('page', ParseIntPipe) page = 1
+  ){
     const email = req.user.email
-    return this.transactionService.findUserTransactions(email);
+    return this.transactionService.findUserTransactions(email, limit, page);
   }
 }

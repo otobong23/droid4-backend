@@ -21,12 +21,32 @@ export class UsersService {
     private readonly jwtService: JwtService
   ) { }
 
-  async findAllTransaction() {
-    return await this.transactionService.findAllTransactions()
+  async findAllTransaction(limit: number = 50, page: number = 1) {
+    limit = Math.max(1, Math.min(limit, 100))
+    page = Math.max(1, page)
+    const offset = (page - 1) * limit;
+    const [transactions, total] = await Promise.all([
+      this.transactionModel.find()
+        .sort({ date: -1 })
+        .limit(limit)
+        .skip(offset)
+        .exec(),
+      this.transactionModel.countDocuments()
+    ]);
+    const totalPages = total === 0 ? 1 : Math.ceil(total / limit);
+    return ({
+      success: true, message: 'Transactions gotten successfully', data: {
+        transactions,
+        page,
+        limit,
+        totalPages,
+        total
+      }
+    })
   }
 
   async updateTransaction(id: string, status: 'completed' | 'failed') {
-    const transaction = await this.transactionModel.findOneAndUpdate({ _id: id }, { status }, { new: true})
+    const transaction = await this.transactionModel.findOneAndUpdate({ _id: id }, { status }, { new: true })
     if (!transaction) throw new NotFoundException('Transaction not found');
     // const user = await this.userModel.findOne({ email: transaction.email }).exec()
     // if (!user) throw new NotFoundException('User not found');
@@ -58,7 +78,7 @@ export class UsersService {
     return await this.profileService.updateUser(email, updateData);
   }
 
-  async updateAmin(updateAdminDto: UpdateAdminDto){
+  async updateAmin(updateAdminDto: UpdateAdminDto) {
     const admin = await this.adminSchemaModel.findOneAndUpdate({}, updateAdminDto, { new: true });
     if (!admin) throw new NotFoundException('Admin not found');
     return admin;

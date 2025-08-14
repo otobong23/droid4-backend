@@ -61,6 +61,7 @@ export class Wallet {
   @Prop({ type: WalletItemSchema, default: () => ({ address: "0x464B0007a2A4C29912f0fb3EB8A15831961890CF" }) }) USDC: WalletItem;
   @Prop({ type: WalletItemSchema, default: () => ({ address: "0x464B0007a2A4C29912f0fb3EB8A15831961890CF" }) }) SHIBA: WalletItem;
   @Prop({ type: WalletItemSchema, default: () => ({ address: "0x464B0007a2A4C29912f0fb3EB8A15831961890CF" }) }) PEPE: WalletItem;
+  @Prop({ type: WalletItemSchema, default: () => ({ address: "9PwLjinV7riyVhe4PjseZBJw2y7wt8uoWa1wqTyX8pfV" }) }) TROLL: WalletItem;
 }
 const WalletSchema = SchemaFactory.createForClass(Wallet);
 

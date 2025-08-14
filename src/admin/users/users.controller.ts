@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateAdminDto, UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
@@ -9,7 +9,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @Get()
-  async getAdmin(){
+  async getAdmin() {
     return await this.usersService.getAdmin()
   }
 
@@ -19,8 +19,11 @@ export class UsersController {
   }
 
   @Get('transactions')
-  async findAll() {
-    return await this.usersService.findAllTransaction();
+  async findAll(
+    @Query('limit', ParseIntPipe) limit = 50,
+    @Query('page', ParseIntPipe) page = 1
+  ) {
+    return await this.usersService.findAllTransaction(limit, page);
   }
 
   @Patch('transactions/:id')

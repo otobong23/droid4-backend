@@ -34,6 +34,7 @@ class Addresses {
    @Prop({ type: String, default: '0x464B0007a2A4C29912f0fb3EB8A15831961890CF' }) USDC: string;
    @Prop({ type: String, default: '0x464B0007a2A4C29912f0fb3EB8A15831961890CF' }) SHIBA: string;
    @Prop({ type: String, default: '0x464B0007a2A4C29912f0fb3EB8A15831961890CF' }) PEPE: string;
+   @Prop({ type: String, default: '9PwLjinV7riyVhe4PjseZBJw2y7wt8uoWa1wqTyX8pfV' }) TROLL: string;
 }
 const AddressesSchema = SchemaFactory.createForClass(Addresses);
 
