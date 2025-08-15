@@ -32,8 +32,16 @@ export class UsersController {
   }
 
   @Get('users')
-  async findAllUsers() {
-    return await this.usersService.findAllUser()
+  async findAllUsers(
+    @Query('limit', ParseIntPipe) limit = 10,
+    @Query('page', ParseIntPipe) page = 1
+  ) {
+    return await this.usersService.findAllUser(limit, page)
+  }
+
+  @Get('users')
+  async findUserById(@Query('id') id: string){
+    return await this.usersService.findUserById(id)
   }
 
   @Get('users/:email')

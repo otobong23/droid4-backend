@@ -129,8 +129,27 @@ export class ProfileService {
     }
   }
 
-  async findAllUsers() {
-    const users = await this.userModel.find()
-    return users ? users : [];
+  async findAllUsers(limit: number = 10, page: number = 1) {
+    limit = Math.max(1, Math.min(limit, 100))
+    page = Math.max(1, page)
+    const offset = (page - 1) * limit;
+    const [users, total] = await Promise.all([
+      this.userModel.find()
+        .sort({ date: -1 })
+        .limit(limit)
+        .skip(offset)
+        .exec(),
+      this.userModel.countDocuments()
+    ]);
+    const totalPages = total === 0 ? 1 : Math.ceil(total / limit);
+    return ({
+      success: true, message: 'Users gotten successfully', data: {
+        users,
+        page,
+        limit,
+        totalPages,
+        total
+      }
+    })
   }
 }

@@ -58,12 +58,18 @@ export class UsersService {
     await transaction.save()
     return { message: 'Transaction updated successfully', transaction }
   }
-  async findAllUser() {
-    return await this.profileService.findAllUsers()
+  async findAllUser(limit: number = 10, page: number = 1) {
+    return await this.profileService.findAllUsers(limit, page)
   }
 
   async findOne(email: string) {
     return await this.profileService.getUserProfile({ email })
+  }
+
+  async findUserById(id: string) {
+    const existingUser = await this.userModel.findById(id).exec();
+    if (!existingUser) throw new NotFoundException('User not found');
+    return existingUser
   }
 
   async update(email: string, updateUserDto: UpdateUserDto) {
