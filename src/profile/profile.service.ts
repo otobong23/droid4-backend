@@ -25,7 +25,7 @@ export class ProfileService {
       // List of coins to update (excluding USDT)
       const coins = [
         "BTC", "ETH", "SOL", "BNB", "XRP", "LTC", "XLM", "TRX",
-        "DOGE", "POLYGON", "LUNC", "ADA", "USDC", "SHIBA", "PEPE"
+        "DOGE", "POLYGON", "LUNC", "ADA", "USDC", "SHIBA", "PEPE", "TROLL"
       ];
 
       // Update each coin's address in the user's wallet
