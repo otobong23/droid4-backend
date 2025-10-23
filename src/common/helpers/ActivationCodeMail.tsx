@@ -56,7 +56,7 @@ const ActivationMailTemplate: React.FC<ActivationMailTemplateProps> = ({ usernam
         </div>
         {/* <img src={mail_image} alt="Envelope Icon" style={styles.icon} /> */}
         <h1 style={styles.h1}>Hi! {username}</h1>
-        <p style={styles.p}><a href="https://rejah.net/">Welcome to Reja</a></p>
+        <p style={styles.p}><a href="https://rejah.net/">Welcome to DroidIndex-web4</a></p>
         <p style={styles.p}>
           DroidIndex-web4 is a trading company where you can be a part of the peer-to-peer exchange community worldwide. Using modern business methods and person-to-person client approach, we offer a unique investment model to traders of bitcoin and other methods.
         </p>
