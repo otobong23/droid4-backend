@@ -39,7 +39,7 @@ export class UsersController {
     return await this.usersService.findAllUser(limit, page)
   }
 
-  @Get('users')
+  @Get('user')
   async findUserById(@Query('id') id: string){
     return await this.usersService.findUserById(id)
   }
