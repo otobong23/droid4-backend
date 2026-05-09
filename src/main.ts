@@ -29,6 +29,7 @@ async function bootstrap() {
   app.enableCors({
     origin: ['http://localhost:3000', 'http://localhost:3001', 'https://droidindex-web4.com', 'https://www.droidindex-web4.com'], // allow requests from your frontend
     credentials: true,               // allow cookies/auth headers if needed
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
   });
 
 //   app.useGlobalPipes(
