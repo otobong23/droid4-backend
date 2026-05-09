@@ -10,6 +10,7 @@ import { TransactionModule } from './transaction/transaction.module';
 import { JwtSharedModule } from './common/jwt/jwt.module';
 import { AdminModule } from './admin/admin.module';
 import { RouterModule } from '@nestjs/core';
+import { CopyTradingModule } from './copy-trading/copy-trading.module';
 config()
 
 @Module({
@@ -17,7 +18,7 @@ config()
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(process.env.MONGODB_URI || ''),
     JwtSharedModule,
-    SeedModule, ProfileModule, TransactionModule, AdminModule,
+    SeedModule, ProfileModule, TransactionModule, AdminModule, CopyTradingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
