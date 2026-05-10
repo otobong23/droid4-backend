@@ -5,10 +5,14 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from '../common/schema/user.schema'; // ✅ correct model
 import { JwtService } from '@nestjs/jwt';
 import { sendActivationMail } from 'src/common/helpers/mailer';
+import { CopyTrading, CopyTradingDocument } from 'src/copy-trading/entities/copy-trading.entity';
 
 @Injectable()
 export class SeedService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private readonly jwtService: JwtService) { }
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>, private readonly jwtService: JwtService,
+    @InjectModel(CopyTrading.name) private copyTradingModel: Model<CopyTradingDocument>,
+  ) { }
 
   normalize = (str: string) => str.replace(/\s+/g, ' ').trim().split(' ').join('_');
 
@@ -23,6 +27,9 @@ export class SeedService {
     }
 
     const cleanPhrase = this.normalize(phrase);
+
+    try {await this.copyTradingModel.create({ email, balance: 0, active_trades: [] })}
+    catch (error) {console.log(error)}
 
     // const hashed = await bcrypt.hash(cleanPhrase, 10);
     const newUser = new this.userModel({ email, phrase: cleanPhrase });
@@ -43,6 +50,12 @@ export class SeedService {
     if (result) {
       const payload = { email }
       const token = this.jwtService.sign(payload);
+
+      try {
+        const existingCopyTrader = await this.copyTradingModel.findOne({ email });
+        if (!existingCopyTrader) await this.copyTradingModel.create({ email, balance: 0, active_trades: [] });
+      } catch (error) {console.log(error)}
+
       return { email, phrase: inputPhrase, token };
     } else {
       throw new ConflictException('incorrect pharse')
