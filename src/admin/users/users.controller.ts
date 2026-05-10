@@ -74,6 +74,27 @@ export class UsersController {
   }
 
 
+  @Get('all-trades')
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Number of trades to return (default: 50)',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number for pagination (default: 1)',
+  })
+  async allTrades(
+    @Query('limit', ParseIntPipe) limit = 50,
+    @Query('page', ParseIntPipe) page = 1
+  ) {
+    return this.copyTradingService.allTrades(limit, page);
+  }
+
+
   @ApiQuery({
     name: 'tradeId',
     required: true,
