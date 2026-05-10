@@ -18,5 +18,6 @@ import { UserTransactionModule } from 'src/common/schema/userTransaction.module'
   ],
   controllers: [CopyTradingController],
   providers: [CopyTradingService],
+  exports: [CopyTradingService]
 })
 export class CopyTradingModule {}

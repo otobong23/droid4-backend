@@ -8,6 +8,7 @@ import { ProfileModule } from 'src/profile/profile.module';
 import { TransactionModule } from 'src/transaction/transaction.module';
 import { AdminSchemaModule } from 'src/common/schema/adminSchema.module';
 import { CopyTradingModule } from 'src/copy-trading/copy-trading.module';
+import { CopyTradingService } from 'src/copy-trading/copy-trading.service';
 
 @Module({
   imports: [
