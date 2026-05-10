@@ -28,7 +28,7 @@ class ActiveTrade {
 }
 
 
-@Schema({ _id: false })
+@Schema({ _id: true })
 export class CopyTrading {
 
    @Prop({ type: String,  ref: User.name, required: true, unique: true })

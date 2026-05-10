@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 
-@Schema({ _id: false, timestamps: true })
+@Schema({ _id: true, timestamps: true })
 export class Trade {
 
    @Prop({ type: String, required: true, lowercase: true, trim: true })
