@@ -20,14 +20,7 @@ export class CopyTradingService {
   async getUserTradingDetails(email: string) {
     const existingCopyTrader = await this.copyTradingModel.findOne({ email });
     if (!existingCopyTrader) throw new NotFoundException('User not found');
-    
-    const existingUser = await this.userModel.findOne({ email });
-    const mainBalance = existingUser ? existingUser.wallet.USDT.reduce((acc, curr) => acc + curr.balance, 0) : 0;
-
-    return {
-      ...existingCopyTrader.toJSON(),
-      mainBalance
-    };
+    return existingCopyTrader;
   }
 
   async deposit(email: string, amount: number) {
