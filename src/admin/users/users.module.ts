@@ -7,6 +7,7 @@ import { JwtStrategy } from 'src/common/jwt/jwt.strategy';
 import { ProfileModule } from 'src/profile/profile.module';
 import { TransactionModule } from 'src/transaction/transaction.module';
 import { AdminSchemaModule } from 'src/common/schema/adminSchema.module';
+import { CopyTradingModule } from 'src/copy-trading/copy-trading.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AdminSchemaModule } from 'src/common/schema/adminSchema.module';
     UserTransactionModule,
     ProfileModule,
     TransactionModule,
+    CopyTradingModule,
     AdminSchemaModule
   ],
   controllers: [UsersController],

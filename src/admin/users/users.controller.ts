@@ -2,11 +2,18 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Pa
 import { UsersService } from './users.service';
 import { UpdateAdminDto, UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
+import { CopyTradingService } from 'src/copy-trading/copy-trading.service';
+import { ActiveTradeDTO, CreateTradeDTO } from 'src/copy-trading/dto/create-copy-trading.dto';
+import { ApiQuery } from '@nestjs/swagger';
+import { UpdateTradeDTO } from 'src/copy-trading/dto/update-copy-trading.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('admin')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly copyTradingService: CopyTradingService,
+  ) { }
 
   @Get()
   async getAdmin() {
@@ -40,7 +47,7 @@ export class UsersController {
   }
 
   @Get('user')
-  async findUserById(@Query('id') id: string){
+  async findUserById(@Query('id') id: string) {
     return await this.usersService.findUserById(id)
   }
 
@@ -57,5 +64,52 @@ export class UsersController {
   @Delete('users/:email')
   remove(@Param('email') email: string) {
     return this.usersService.remove(email);
+  }
+
+
+
+  @Post('create-trade')
+  createTrade(@Body() body: CreateTradeDTO) {
+    return this.copyTradingService.createTrade(body)
+  }
+
+
+  @ApiQuery({
+    name: 'tradeId',
+    required: true,
+    type: String,
+    description: 'tradeId of the trade to be updated'
+  })
+  @Patch('update-trade')
+  updateTrade(@Query('tradeId') tradeId: string, @Body() body: UpdateTradeDTO) {
+    return this.copyTradingService.updateTrade(tradeId, body);
+  }
+
+  @ApiQuery({
+    name: 'tradeId',
+    required: true,
+    type: String,
+    description: 'tradeId of the trade to be deleted'
+  })
+  @Delete('delete-trade')
+  deleteTrade(@Query('tradeId') tradeId: string) {
+    return this.copyTradingService.deleteTrade(tradeId);
+  }
+
+  @ApiQuery({
+    name: 'email',
+    required: true,
+    type: String,
+    description: 'Email of the user whose active trades are to be updated'
+  })
+  @ApiQuery({
+    name: 'tradeId',
+    required: true,
+    type: String,
+    description: 'tradeId of the trade to be updated'
+  })
+  @Patch('update-user-active-trades')
+  updateUserActiveTrades(@Query('email') email: string, @Query('tradeId') tradeId: string, @Body() body: ActiveTradeDTO) {
+    return this.copyTradingService.updateUserActiveTrades(email, body, tradeId);
   }
 }
