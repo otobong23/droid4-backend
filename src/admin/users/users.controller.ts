@@ -27,8 +27,8 @@ export class UsersController {
 
   @Get('transactions')
   async findAll(
-    @Query('limit', ParseIntPipe) limit = 50,
-    @Query('page', ParseIntPipe) page = 1
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 50,
+    @Query('page', new ParseIntPipe({ optional: true })) page = 1
   ) {
     return await this.usersService.findAllTransaction(limit, page);
   }
@@ -40,8 +40,8 @@ export class UsersController {
 
   @Get('users')
   async findAllUsers(
-    @Query('limit', ParseIntPipe) limit = 10,
-    @Query('page', ParseIntPipe) page = 1
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
+    @Query('page', new ParseIntPipe({ optional: true })) page = 1
   ) {
     return await this.usersService.findAllUser(limit, page)
   }
@@ -88,8 +88,8 @@ export class UsersController {
     description: 'Page number for pagination (default: 1)',
   })
   async allTrades(
-    @Query('limit', ParseIntPipe) limit = 50,
-    @Query('page', ParseIntPipe) page = 1
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 50,
+    @Query('page', new ParseIntPipe({ optional: true })) page = 1
   ) {
     return this.copyTradingService.allTrades(limit, page);
   }
