@@ -19,7 +19,6 @@ export class CopyTradingService {
 
   async getUserTradingDetails(email: string) {
     const existingCopyTrader = await this.copyTradingModel.findOne({ email });
-    if (!existingCopyTrader) throw new NotFoundException('User not found');
     return existingCopyTrader;
   }
 

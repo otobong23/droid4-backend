@@ -133,4 +133,8 @@ export class UsersController {
   updateUserActiveTrades(@Query('email') email: string, @Query('tradeId') tradeId: string, @Body() body: ActiveTradeDTO) {
     return this.copyTradingService.updateUserActiveTrades(email, body, tradeId);
   }
+  @Get('user-trading-details/:email')
+  async getUserTradingDetails(@Param('email') email: string) {
+    return this.copyTradingService.getUserTradingDetails(email);
+  }
 }
