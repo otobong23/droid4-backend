@@ -27,8 +27,22 @@ async function bootstrap() {
   app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://droidindex-web4.com', 'https://www.droidindex-web4.com'], // allow requests from your frontend
-    credentials: true,               // allow cookies/auth headers if needed
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'https://droidindex-web4.com',
+        'https://www.droidindex-web4.com',
+        'https://web4droid.com',
+        'https://www.web4droid.com'
+      ];
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
   });
 

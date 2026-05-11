@@ -149,15 +149,13 @@ export class CopyTradingService {
   async updateUserActiveTrades(email: string, activeTradesDto: ActiveTradeDTO, tradeId: string) {
     const existingCopyTrader = await this.copyTradingModel.findOne({ email });
     if (!existingCopyTrader) throw new NotFoundException('User not found');
-    existingCopyTrader.active_trades = existingCopyTrader.active_trades.map(trade => {
-      if (trade.tradeId === tradeId) {
-        return {
-          ...trade,
-          ...activeTradesDto
-        }
-      }
-      return trade;
-    })
+    
+    const trade = existingCopyTrader.active_trades.find(t => t.tradeId === tradeId);
+    if (!trade) throw new NotFoundException('Trade not found for this user');
+
+    Object.assign(trade, activeTradesDto);
+
+    existingCopyTrader.markModified('active_trades');
     await existingCopyTrader.save();
     return existingCopyTrader;
   }
