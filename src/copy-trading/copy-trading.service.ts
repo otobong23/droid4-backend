@@ -60,7 +60,7 @@ export class CopyTradingService {
 
     const transaction = this.transactionModel.create({
       email,
-      type: 'withdraw',
+      type: 'withdrawal',
       amount,
       note: `Internal transfer: Withdraw from copy trading account`,
       status: 'completed',
