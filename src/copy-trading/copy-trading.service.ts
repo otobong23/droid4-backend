@@ -1,6 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { ActiveTradeDTO, CreateCopyTradingDto, CreateTradeDTO } from './dto/create-copy-trading.dto';
-import { UpdateCopyTradingDto, UpdateTradeDTO } from './dto/update-copy-trading.dto';
+import { CreateTradeDTO } from './dto/create-copy-trading.dto';
+import { UpdateActiveTradeDTO, UpdateCopyTradingDto, UpdateTradeDTO } from './dto/update-copy-trading.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from 'src/common/schema/user.schema';
 import { Model } from 'mongoose';
@@ -146,7 +146,7 @@ export class CopyTradingService {
 
 
   // Admin functions to manage trades and user active trades
-  async updateUserActiveTrades(email: string, activeTradesDto: ActiveTradeDTO, tradeId: string) {
+  async updateUserActiveTrades(email: string, activeTradesDto: UpdateActiveTradeDTO, tradeId: string) {
     const existingCopyTrader = await this.copyTradingModel.findOne({ email });
     if (!existingCopyTrader) throw new NotFoundException('User not found');
     
@@ -176,7 +176,6 @@ export class CopyTradingService {
     const trade = await this.tradeModel.findByIdAndDelete(tradeId);
     if (!trade) throw new NotFoundException('Trade not found');
     return trade;
-
   }
 
 }

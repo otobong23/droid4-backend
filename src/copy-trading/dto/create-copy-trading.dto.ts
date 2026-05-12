@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateCopyTradingDto { }
@@ -78,43 +78,39 @@ export class CreateTradeDTO {
 
 export class ActiveTradeDTO {
 
-   @ApiPropertyOptional({
+   @ApiProperty({
       example: 'Miracle',
       type: String,
       description: "Trader's Name",
    })
    @IsString()
-   @IsOptional()
    trader_name!: string;
 
 
-   @ApiPropertyOptional({
+   @ApiProperty({
       example: 50,
       type: Number,
       description: "Trade's Leverage",
    })
    @IsNumber()
-   @IsOptional()
    leverage!: number;
 
 
-   @ApiPropertyOptional({
+   @ApiProperty({
       example: 'btc/usdt',
       type: String,
       description: "Trade's symbol",
    })
    @IsString()
-   @IsOptional()
    symbol!: string;
 
 
-   @ApiPropertyOptional({
+   @ApiProperty({
       example: 70,
       type: Number,
       description: "Trader's Winrate",
    })
    @IsNumber()
-   @IsOptional()
    winrate!: number
 
 
@@ -124,17 +120,15 @@ export class ActiveTradeDTO {
       description: "Trade's PNL",
    })
    @IsNumber()
-   @IsOptional()
    PNL?: number;
 
 
-   @ApiPropertyOptional({
+   @ApiProperty({
       example: 'country name',
       type: String,
       description: "Trade's country",
    })
    @IsString()
-   @IsOptional()
    country!: string;
 }
 

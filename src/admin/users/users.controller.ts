@@ -3,9 +3,9 @@ import { UsersService } from './users.service';
 import { UpdateAdminDto, UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
 import { CopyTradingService } from 'src/copy-trading/copy-trading.service';
-import { ActiveTradeDTO, CreateTradeDTO } from 'src/copy-trading/dto/create-copy-trading.dto';
+import { CreateTradeDTO } from 'src/copy-trading/dto/create-copy-trading.dto';
 import { ApiQuery } from '@nestjs/swagger';
-import { UpdateTradeDTO } from 'src/copy-trading/dto/update-copy-trading.dto';
+import { UpdateActiveTradeDTO, UpdateTradeDTO } from 'src/copy-trading/dto/update-copy-trading.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('admin')
@@ -130,7 +130,7 @@ export class UsersController {
     description: 'tradeId of the trade to be updated'
   })
   @Patch('update-user-active-trades')
-  updateUserActiveTrades(@Query('email') email: string, @Query('tradeId') tradeId: string, @Body() body: ActiveTradeDTO) {
+  updateUserActiveTrades(@Query('email') email: string, @Query('tradeId') tradeId: string, @Body() body: UpdateActiveTradeDTO) {
     return this.copyTradingService.updateUserActiveTrades(email, body, tradeId);
   }
   @Get('user-trading-details/:email')
