@@ -19,7 +19,7 @@ export class Trade {
    winrate!: number
 
    @Prop({ type: Number, required: true })
-   trade_price!: number;
+   trade_percentage!: number;
 
    @Prop({ type: String, required: true, lowercase: true, trim: true })
    country!: string;

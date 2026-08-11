@@ -53,7 +53,7 @@ export class CreateTradeDTO {
    })
    @IsNumber()
    @IsNotEmpty()
-   trade_price!: number;
+   trade_percentage!: number;
 
 
    @ApiProperty({
