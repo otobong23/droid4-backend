@@ -54,14 +54,19 @@ export class CopyTradingService {
 
     if (existingCopyTrader.balance < amount) throw new ConflictException('Insufficient balance');
     existingCopyTrader.balance -= amount;
-    existingUser.wallet.USDT[2].balance += amount;
+
+    const activeTradesTotalPercentage = existingCopyTrader.active_trades.reduce((a, b) => a + b.trade_percentage, 0);
+    const percent = activeTradesTotalPercentage / existingCopyTrader.active_trades.length;
+    const figures = (percent / 100) * amount;
+
+    existingUser.wallet.USDT[2].balance += (amount - figures);
     await existingCopyTrader.save();
     await existingUser.save();
 
     const transaction = this.transactionModel.create({
       email,
       type: 'withdrawal',
-      amount,
+      amount: (amount - figures),
       note: `Internal transfer: Withdraw from copy trading account`,
       status: 'completed',
     })
