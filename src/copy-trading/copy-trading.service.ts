@@ -76,9 +76,9 @@ export class CopyTradingService {
     const trade = await this.tradeModel.findOne({ _id: tradeId });
     if (!trade) throw new NotFoundException('Trade not found');
 
-    // if (existingCopyTrader.balance < trade.trade_percentage) throw new ConflictException('Insufficient balance');
+    // if (existingCopyTrader.balance < trade.trade_price) throw new ConflictException('Insufficient balance');
 
-    // existingCopyTrader.balance -= trade.trade_percentage;
+    // existingCopyTrader.balance -= trade.trade_price;
 
     existingCopyTrader.active_trades.push({
       tradeId,
@@ -87,18 +87,19 @@ export class CopyTradingService {
       symbol: trade.symbol,
       winrate: trade.winrate,
       country: trade.country,
+      trade_percentage: trade.trade_percentage
       // PNL will be defaulted to 0 and updated later based on the performance of the trade
     })
 
     await existingCopyTrader.save();
 
-    const transaction = this.transactionModel.create({
-      email,
-      type: 'buy',
-      amount: trade.trade_percentage,
-      note: `Internal transfer: copy trade ${trade.symbol}`,
-      status: 'completed',
-    })
+    // const transaction = this.transactionModel.create({
+    //   email,
+    //   type: 'buy',
+    //   amount: trade.trade_percentage,
+    //   note: `Internal transfer: copy trade ${trade.symbol}`,
+    //   status: 'completed',
+    // })
 
     return existingCopyTrader;
   }
