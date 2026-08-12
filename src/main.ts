@@ -11,6 +11,8 @@ console.log(port)
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const httpAdapter = app.getHttpAdapter().getInstance(); // Express instance
+  httpAdapter.set('etag', false);
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Droid Index API')
@@ -25,13 +27,6 @@ async function bootstrap() {
 
   app.use(bodyParser.json({ limit: '10mb' }));      // for JSON bodies
   app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-
-  app.use((req, res, next) => {
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-    next();
-  });
 
   app.enableCors({
     origin: (origin, callback) => {
@@ -51,6 +46,13 @@ async function bootstrap() {
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+  });
+
+  app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
   });
 
   //   app.useGlobalPipes(
