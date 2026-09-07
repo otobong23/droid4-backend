@@ -1,6 +1,9 @@
-
 //Miracle Boniface
-import { Injectable, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotAcceptableException,
+} from '@nestjs/common';
 import fetch from 'node-fetch';
 // OnModuleInit
 
@@ -9,12 +12,15 @@ export class CryptoService {
   private async getCoinIdById(symbol: string): Promise<string | null> {
     try {
       // Use search API instead of full list - much smaller response
-      const res = await fetch(`https://api.coingecko.com/api/v3/search?query=${symbol}`);
+      const res = await fetch(
+        `https://api.coingecko.com/api/v3/search?query=${symbol}`,
+      );
       const data = await res.json();
 
       const coin = data.coins?.find(
-        (c) => c.id.toLowerCase() === symbol.toLowerCase() ||
-          c.symbol.toLowerCase() === symbol.toLowerCase()
+        (c) =>
+          c.id.toLowerCase() === symbol.toLowerCase() ||
+          c.symbol.toLowerCase() === symbol.toLowerCase(),
       );
 
       return coin ? coin.id : null;
@@ -27,7 +33,9 @@ export class CryptoService {
   async getPriceUSD(symbol: string): Promise<number> {
     const coinId = await this.getCoinIdById(symbol);
     if (!coinId) {
-      throw new NotAcceptableException(`Coin symbol "${symbol}" is not supported.`);
+      throw new NotAcceptableException(
+        `Coin symbol "${symbol}" is not supported.`,
+      );
     }
 
     const url = `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`;
@@ -38,7 +46,9 @@ export class CryptoService {
 
       const price = data?.[coinId]?.usd;
       if (!price) {
-        throw new InternalServerErrorException(`Unable to retrieve price for ${symbol}`);
+        throw new InternalServerErrorException(
+          `Unable to retrieve price for ${symbol}`,
+        );
       }
 
       return price;
@@ -51,17 +61,15 @@ export class CryptoService {
   async swap(
     from: string,
     to: string,
-    amount: number
-  )
-  : Promise<{
+    amount: number,
+  ): Promise<{
     result: number;
     fromSymbol: string;
     toSymbol: string;
     fromPrice: number;
     toPrice: number;
     timestamp: string;
-  }> 
-  {
+  }> {
     const fromId = await this.getCoinIdById(from);
     const toId = await this.getCoinIdById(to);
 
@@ -81,7 +89,9 @@ export class CryptoService {
       const fromPrice = data?.[fromId]?.usd;
       const toPrice = data?.[toId]?.usd;
       if (!fromPrice || !toPrice) {
-        throw new InternalServerErrorException('Failed to retrieve prices for swap');
+        throw new InternalServerErrorException(
+          'Failed to retrieve prices for swap',
+        );
       }
 
       const result = (amount * fromPrice) / toPrice;

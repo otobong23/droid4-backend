@@ -3,9 +3,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Admin, AdminSchema } from './admin.schema';
 
 @Module({
-   imports: [
-      MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
-   ],
-   exports: [MongooseModule]
+  imports: [
+    MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]),
+  ],
+  exports: [MongooseModule],
 })
-export class AdminSchemaModule { }
+export class AdminSchemaModule {}

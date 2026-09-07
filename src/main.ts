@@ -4,10 +4,10 @@ import { ValidationPipe } from '@nestjs/common';
 import { config } from 'dotenv';
 import * as bodyParser from 'body-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-config()
+config();
 
-const port = process.env.PORT || 4000
-console.log(port)
+const port = process.env.PORT || 4000;
+console.log(port);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,9 +23,7 @@ async function bootstrap() {
   const documentFactory = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api-docs', app, documentFactory);
 
-
-
-  app.use(bodyParser.json({ limit: '10mb' }));      // for JSON bodies
+  app.use(bodyParser.json({ limit: '10mb' })); // for JSON bodies
   app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
   app.enableCors({
@@ -36,20 +34,27 @@ async function bootstrap() {
         'https://droidindex-web4.com',
         'https://www.droidindex-web4.com',
         'https://web4droid.com',
-        'https://www.web4droid.com'
+        'https://www.web4droid.com',
       ];
-      if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app')
+      ) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
       }
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   });
 
   app.use((req, res, next) => {
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, proxy-revalidate',
+    );
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
     next();

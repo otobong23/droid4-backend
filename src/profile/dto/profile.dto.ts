@@ -1,16 +1,14 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class ProfileDto {}
 
 export class SwapDto {
+  @IsString()
+  from: string;
 
-   @IsString()
-   from: string;
+  @IsString()
+  to: string;
 
-   @IsString()
-   to: string;
-
-   @IsNumber()
-   amount: number;
+  @IsNumber()
+  amount: number;
 }
-

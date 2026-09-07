@@ -17,9 +17,9 @@ import { CopyTradingService } from 'src/copy-trading/copy-trading.service';
     ProfileModule,
     TransactionModule,
     CopyTradingModule,
-    AdminSchemaModule
+    AdminSchemaModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, JwtStrategy],
 })
-export class UsersModule { }
+export class UsersModule {}

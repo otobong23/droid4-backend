@@ -1,39 +1,46 @@
-import { Type } from "class-transformer";
-import { IsDateString, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, MaxLength } from "class-validator";
-
+import { Type } from 'class-transformer';
+import {
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class DepositDto {
+  @IsNotEmpty()
+  @IsString()
+  Coin: string;
 
-   @IsNotEmpty()
-   @IsString()
-   Coin: string;
+  @IsNotEmpty()
+  @IsNumber()
+  amount: number;
 
-   @IsNotEmpty()
-   @IsNumber()
-   amount: number;
-
-   @IsNotEmpty()
-   @IsString()
-   image: string
+  @IsNotEmpty()
+  @IsString()
+  image: string;
 }
 
 export class WithdrawDto {
+  @IsNotEmpty()
+  @IsString()
+  walletAddress: string;
 
-   @IsNotEmpty()
-   @IsString()
-   walletAddress: string;
+  @IsNotEmpty()
+  @IsString()
+  amount: number;
 
-   @IsNotEmpty()
-   @IsString()
-   amount: number;
+  @IsNotEmpty()
+  @IsString()
+  coin: string;
 
-   @IsNotEmpty()
-   @IsString()
-   coin: string;
-
-   @IsNotEmpty()
-   @IsString()
-   network: string;
+  @IsNotEmpty()
+  @IsString()
+  network: string;
 }
 
 export enum TransactionType {
@@ -43,13 +50,13 @@ export enum TransactionType {
   YIELD = 'yield',
   SWAP = 'swap',
   BUY = 'buy',
-  SELL = 'sell'
+  SELL = 'sell',
 }
 
 export enum TransactionStatus {
-  PENDING   = 'pending',
+  PENDING = 'pending',
   COMPLETED = 'completed',
-  FAILED    = 'failed',
+  FAILED = 'failed',
 }
 
 export class SwapDTO {
@@ -59,7 +66,7 @@ export class SwapDTO {
   @IsString()
   fromCoin: string;
 
-  @Type(() => Number)          // converts "1.23" (string) → 1.23 (number)
+  @Type(() => Number) // converts "1.23" (string) → 1.23 (number)
   @IsNumber({ maxDecimalPlaces: 8 })
   @IsPositive()
   amount!: number;
@@ -73,14 +80,14 @@ export class CreateTransactionDto {
   @IsEnum(TransactionType)
   type!: TransactionType;
 
-  @Type(() => Number)          // converts "1.23" (string) → 1.23 (number)
+  @Type(() => Number) // converts "1.23" (string) → 1.23 (number)
   @IsNumber({ maxDecimalPlaces: 8 })
   @IsPositive()
   amount!: number;
 
   @IsString()
-  coin!: string;               // keep the capital ‘C’ if you must: @Expose({ name: 'Coin' })
-  
+  coin!: string; // keep the capital ‘C’ if you must: @Expose({ name: 'Coin' })
+
   /* ── Optional ─────────────────────────────────────────── */
   @IsOptional()
   @IsString()
@@ -100,7 +107,7 @@ export class CreateTransactionDto {
   note?: string;
 
   @IsOptional()
-  @IsString()                  // switch to IsUrl() if you store URLs
+  @IsString() // switch to IsUrl() if you store URLs
   image?: string;
 
   @IsOptional()
@@ -108,6 +115,6 @@ export class CreateTransactionDto {
   withdrawWalletAddress?: string;
 
   @IsOptional()
-  @IsDateString()              // ISO‑8601 string → Date automatically by class‑transformer
+  @IsDateString() // ISO‑8601 string → Date automatically by class‑transformer
   date?: Date;
 }

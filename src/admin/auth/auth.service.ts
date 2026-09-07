@@ -12,23 +12,24 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     @InjectModel(Admin.name) private adminSchemaModel: Model<AdminDocument>,
-  ) { }
+  ) {}
 
-  //login service functionalities 
+  //login service functionalities
   //start
   async login({ email, password }: Login) {
-    const admin = process.env.ADMIN_EMAIL
+    const admin = process.env.ADMIN_EMAIL;
     if (admin === email) {
-      const existingAdmin = await this.adminSchemaModel.findOne()
+      const existingAdmin = await this.adminSchemaModel.findOne();
       if (!existingAdmin) {
-        const newAdmin = new this.adminSchemaModel({ email: admin })
-        await newAdmin.save()
+        const newAdmin = new this.adminSchemaModel({ email: admin });
+        await newAdmin.save();
       }
-      if (existingAdmin?.password !== password) throw new UnauthorizedException('Invalid credentials');
+      if (existingAdmin?.password !== password)
+        throw new UnauthorizedException('Invalid credentials');
       return {
         success: true,
         adminToken: this.jwtService.sign({ email, password }),
-        message: 'login successful'
+        message: 'login successful',
       };
     }
     throw new UnauthorizedException('Invalid credentials');

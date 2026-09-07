@@ -1,4 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, BadRequestException, UploadedFile, Query, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  UseInterceptors,
+  BadRequestException,
+  UploadedFile,
+  Query,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
 import { DepositDto, SwapDTO, WithdrawDto } from './dto/transaction.dto';
@@ -10,19 +25,19 @@ export class TransactionController {
 
   @Post('send') //to withdraw
   send(@Body() withdrawDto: WithdrawDto, @Req() req) {
-    const email = req.user.email
+    const email = req.user.email;
     return this.transactionService.withdraw(withdrawDto, email);
   }
 
   @Post('recieve') // to deposit
-  recieve(@Body() depositDto:DepositDto, @Req() req) {
-    const email = req.user.email
+  recieve(@Body() depositDto: DepositDto, @Req() req) {
+    const email = req.user.email;
     return this.transactionService.deposit(depositDto, email);
   }
 
   @Post('swap')
   swap(@Body() swapDto: SwapDTO, @Req() req) {
-    const email = req.user.email
+    const email = req.user.email;
     return this.transactionService.swap(swapDto, email);
   }
 
@@ -30,9 +45,9 @@ export class TransactionController {
   findAll(
     @Req() req,
     @Query('limit', ParseIntPipe) limit = 50,
-    @Query('page', ParseIntPipe) page = 1
-  ){
-    const email = req.user.email
+    @Query('page', ParseIntPipe) page = 1,
+  ) {
+    const email = req.user.email;
     return this.transactionService.findUserTransactions(email, limit, page);
   }
 }

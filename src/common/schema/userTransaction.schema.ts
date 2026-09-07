@@ -8,7 +8,10 @@ export class UserTransaction {
   @Prop({ type: String, ref: 'user', required: true })
   email: string;
 
-  @Prop({ required: true, enum: ['deposit', 'withdrawal', 'plans', 'yield', 'swap', 'buy', 'sell'] })
+  @Prop({
+    required: true,
+    enum: ['deposit', 'withdrawal', 'plans', 'yield', 'swap', 'buy', 'sell'],
+  })
   type: string;
 
   @Prop({ required: true })
@@ -21,22 +24,23 @@ export class UserTransaction {
   Coin: string; // e.g. 'USDT', 'BTC'
 
   @Prop({ type: String })
-  fromCoin
+  fromCoin;
 
   @Prop({ default: null })
   network: string;
 
   @Prop({ type: String })
-  note: string
+  note: string;
 
   @Prop({ type: String })
-  image: string
+  image: string;
 
   @Prop({ type: String })
-  withdrawWalletAddress: string
+  withdrawWalletAddress: string;
 
   @Prop({ type: Date })
   date: Date;
 }
 
-export const UserTransactionSchema = SchemaFactory.createForClass(UserTransaction);
+export const UserTransactionSchema =
+  SchemaFactory.createForClass(UserTransaction);

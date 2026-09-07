@@ -1,11 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateAdminDto, UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
 import { CopyTradingService } from 'src/copy-trading/copy-trading.service';
 import { CreateTradeDTO } from 'src/copy-trading/dto/create-copy-trading.dto';
 import { ApiQuery } from '@nestjs/swagger';
-import { UpdateActiveTradeDTO, UpdateTradeDTO } from 'src/copy-trading/dto/update-copy-trading.dto';
+import {
+  UpdateActiveTradeDTO,
+  UpdateTradeDTO,
+} from 'src/copy-trading/dto/update-copy-trading.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('admin')
@@ -13,11 +27,11 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly copyTradingService: CopyTradingService,
-  ) { }
+  ) {}
 
   @Get()
   async getAdmin() {
-    return await this.usersService.getAdmin()
+    return await this.usersService.getAdmin();
   }
 
   @Patch()
@@ -28,27 +42,30 @@ export class UsersController {
   @Get('transactions')
   async findAll(
     @Query('limit', new ParseIntPipe({ optional: true })) limit = 50,
-    @Query('page', new ParseIntPipe({ optional: true })) page = 1
+    @Query('page', new ParseIntPipe({ optional: true })) page = 1,
   ) {
     return await this.usersService.findAllTransaction(limit, page);
   }
 
   @Patch('transactions/:id')
-  async updateTransaction(@Param('id') id: string, @Query('status') status: 'completed' | 'failed') {
-    return await this.usersService.updateTransaction(id, status)
+  async updateTransaction(
+    @Param('id') id: string,
+    @Query('status') status: 'completed' | 'failed',
+  ) {
+    return await this.usersService.updateTransaction(id, status);
   }
 
   @Get('users')
   async findAllUsers(
     @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
-    @Query('page', new ParseIntPipe({ optional: true })) page = 1
+    @Query('page', new ParseIntPipe({ optional: true })) page = 1,
   ) {
-    return await this.usersService.findAllUser(limit, page)
+    return await this.usersService.findAllUser(limit, page);
   }
 
   @Get('user')
   async findUserById(@Query('id') id: string) {
-    return await this.usersService.findUserById(id)
+    return await this.usersService.findUserById(id);
   }
 
   @Get('users/:email')
@@ -66,13 +83,10 @@ export class UsersController {
     return this.usersService.remove(email);
   }
 
-
-
   @Post('create-trade')
   createTrade(@Body() body: CreateTradeDTO) {
-    return this.copyTradingService.createTrade(body)
+    return this.copyTradingService.createTrade(body);
   }
-
 
   @Get('all-trades')
   @ApiQuery({
@@ -89,17 +103,16 @@ export class UsersController {
   })
   async allTrades(
     @Query('limit', new ParseIntPipe({ optional: true })) limit = 50,
-    @Query('page', new ParseIntPipe({ optional: true })) page = 1
+    @Query('page', new ParseIntPipe({ optional: true })) page = 1,
   ) {
     return this.copyTradingService.allTrades(limit, page);
   }
-
 
   @ApiQuery({
     name: 'tradeId',
     required: true,
     type: String,
-    description: 'tradeId of the trade to be updated'
+    description: 'tradeId of the trade to be updated',
   })
   @Patch('update-trade')
   updateTrade(@Query('tradeId') tradeId: string, @Body() body: UpdateTradeDTO) {
@@ -110,7 +123,7 @@ export class UsersController {
     name: 'tradeId',
     required: true,
     type: String,
-    description: 'tradeId of the trade to be deleted'
+    description: 'tradeId of the trade to be deleted',
   })
   @Delete('delete-trade')
   deleteTrade(@Query('tradeId') tradeId: string) {
@@ -121,16 +134,20 @@ export class UsersController {
     name: 'email',
     required: true,
     type: String,
-    description: 'Email of the user whose active trades are to be updated'
+    description: 'Email of the user whose active trades are to be updated',
   })
   @ApiQuery({
     name: 'tradeId',
     required: true,
     type: String,
-    description: 'tradeId of the trade to be updated'
+    description: 'tradeId of the trade to be updated',
   })
   @Patch('update-user-active-trades')
-  updateUserActiveTrades(@Query('email') email: string, @Query('tradeId') tradeId: string, @Body() body: UpdateActiveTradeDTO) {
+  updateUserActiveTrades(
+    @Query('email') email: string,
+    @Query('tradeId') tradeId: string,
+    @Body() body: UpdateActiveTradeDTO,
+  ) {
     return this.copyTradingService.updateUserActiveTrades(email, body, tradeId);
   }
   @Get('user-trading-details/:email')

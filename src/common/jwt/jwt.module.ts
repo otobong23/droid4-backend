@@ -5,7 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 @Global()
 @Module({
   imports: [
-   PassportModule,
+    PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '7d' },

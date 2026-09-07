@@ -4,12 +4,12 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from 'src/common/jwt/jwt.strategy';
 import { config } from 'dotenv';
 import { AdminSchemaModule } from 'src/common/schema/adminSchema.module';
-config()
+config();
 
 @Module({
   imports: [AdminSchemaModule],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
-  exports: [JwtStrategy]
+  exports: [JwtStrategy],
 })
-export class AuthModule { }
+export class AuthModule {}

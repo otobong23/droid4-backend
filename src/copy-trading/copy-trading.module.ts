@@ -10,14 +10,14 @@ import { UserTransactionModule } from 'src/common/schema/userTransaction.module'
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: CopyTrading.name, schema: CopyTradingSchema},
-      { name: Trade.name, schema: TradeSchema}
+      { name: CopyTrading.name, schema: CopyTradingSchema },
+      { name: Trade.name, schema: TradeSchema },
     ]),
     UserModule,
     UserTransactionModule,
   ],
   controllers: [CopyTradingController],
   providers: [CopyTradingService],
-  exports: [CopyTradingService]
+  exports: [CopyTradingService],
 })
 export class CopyTradingModule {}

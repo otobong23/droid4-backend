@@ -1,5 +1,9 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { ActiveTradeDTO, CreateCopyTradingDto, CreateTradeDTO } from './create-copy-trading.dto';
+import {
+  ActiveTradeDTO,
+  CreateCopyTradingDto,
+  CreateTradeDTO,
+} from './create-copy-trading.dto';
 
 export class UpdateCopyTradingDto extends PartialType(CreateCopyTradingDto) {}
 

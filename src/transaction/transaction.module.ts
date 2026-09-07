@@ -6,12 +6,9 @@ import { JwtStrategy } from 'src/common/jwt/jwt.strategy';
 import { UserTransactionModule } from 'src/common/schema/userTransaction.module';
 
 @Module({
-  imports: [
-    UserModule,
-    UserTransactionModule
-  ],
+  imports: [UserModule, UserTransactionModule],
   controllers: [TransactionController],
   providers: [TransactionService, JwtStrategy],
-  exports: [TransactionService]
+  exports: [TransactionService],
 })
-export class TransactionModule { }
+export class TransactionModule {}

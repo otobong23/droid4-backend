@@ -5,9 +5,11 @@ import { config } from 'dotenv';
 import { UserModule } from 'src/common/schema/user.module';
 import { JwtStrategy } from 'src/common/jwt/jwt.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CopyTrading, CopyTradingSchema } from 'src/copy-trading/entities/copy-trading.entity';
-config()
-
+import {
+  CopyTrading,
+  CopyTradingSchema,
+} from 'src/copy-trading/entities/copy-trading.entity';
+config();
 
 @Module({
   imports: [
@@ -20,5 +22,4 @@ config()
   providers: [SeedService, JwtStrategy],
   exports: [SeedService],
 })
-export class SeedModule { }
-
+export class SeedModule {}

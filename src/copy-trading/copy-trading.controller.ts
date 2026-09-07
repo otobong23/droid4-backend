@@ -1,6 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  Query,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { CopyTradingService } from './copy-trading.service';
-import { copyTradeDepositDto, copyTradeWithdrawDto, CreateCopyTradingDto, tradeIdDto } from './dto/create-copy-trading.dto';
+import {
+  copyTradeDepositDto,
+  copyTradeWithdrawDto,
+  CreateCopyTradingDto,
+  tradeIdDto,
+} from './dto/create-copy-trading.dto';
 import { UpdateCopyTradingDto } from './dto/update-copy-trading.dto';
 import { JwtAuthGuard } from 'src/common/jwt/jwt-auth.guard';
 import { ApiProperty, ApiQuery } from '@nestjs/swagger';
@@ -8,13 +25,12 @@ import { ApiProperty, ApiQuery } from '@nestjs/swagger';
 @UseGuards(JwtAuthGuard)
 @Controller('copy-trading')
 export class CopyTradingController {
-  constructor(private readonly copyTradingService: CopyTradingService) { }
-
+  constructor(private readonly copyTradingService: CopyTradingService) {}
 
   @Get('user-trading-details')
   @ApiProperty({
     type: undefined,
-    description: "No body required",
+    description: 'No body required',
   })
   async getUserTradingDetails(@Req() req) {
     const email = req.user.email;
@@ -45,7 +61,6 @@ export class CopyTradingController {
     return this.copyTradingService.liquidate(email, body.tradeId);
   }
 
-
   @Get('all-trades')
   @ApiQuery({
     name: 'limit',
@@ -61,7 +76,7 @@ export class CopyTradingController {
   })
   async allTrades(
     @Query('limit', ParseIntPipe) limit = 50,
-    @Query('page', ParseIntPipe) page = 1
+    @Query('page', ParseIntPipe) page = 1,
   ) {
     return this.copyTradingService.allTrades(limit, page);
   }
