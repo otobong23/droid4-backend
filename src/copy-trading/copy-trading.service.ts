@@ -43,17 +43,35 @@ export class CopyTradingService {
     if (!existingUser) throw new NotFoundException('User not found');
     if (!existingCopyTrader) throw new NotFoundException('User not found');
 
-    const balance = existingUser.wallet.USDT.reduce(
-      (acc, curr) => acc + curr.balance,
+    const balance = (existingUser.wallet?.USDT || []).reduce(
+      (acc, curr) => acc + (curr.balance || 0),
       0,
     );
     if (balance < amount) throw new ConflictException('Insufficient balance');
+
     existingCopyTrader.balance += amount;
-    existingUser.wallet.USDT[2].balance -= amount;
+
+    // Deduct amount from user's USDT wallet (across available networks)
+    let remaining = amount;
+    if (existingUser.wallet?.USDT) {
+      for (const item of existingUser.wallet.USDT) {
+        if (remaining <= 0) break;
+        const take = Math.min(item.balance || 0, remaining);
+        item.balance -= take;
+        remaining -= take;
+      }
+      if (remaining > 0 && existingUser.wallet.USDT.length > 0) {
+        existingUser.wallet.USDT[0].balance -= remaining;
+      }
+    }
+
+    existingUser.markModified('wallet');
+    existingCopyTrader.markModified('balance');
+
     await existingCopyTrader.save();
     await existingUser.save();
 
-    const transaction = this.transactionModel.create({
+    const transaction = await this.transactionModel.create({
       email,
       type: 'deposit',
       amount,
@@ -75,7 +93,14 @@ export class CopyTradingService {
     existingCopyTrader.balance -= amount;
 
     // No fee charged on withdrawal - 100% credited to user's wallet
-    existingUser.wallet.USDT[2].balance += amount;
+    if (existingUser.wallet?.USDT && existingUser.wallet.USDT.length > 0) {
+      const targetIndex = existingUser.wallet.USDT.length > 2 ? 2 : 0;
+      existingUser.wallet.USDT[targetIndex].balance += amount;
+    }
+
+    existingUser.markModified('wallet');
+    existingCopyTrader.markModified('balance');
+
     await existingCopyTrader.save();
     await existingUser.save();
 
@@ -97,24 +122,16 @@ export class CopyTradingService {
     const trade = await this.tradeModel.findOne({ _id: tradeId });
     if (!trade) throw new NotFoundException('Trade not found');
 
+    // Require a funded copy-trading wallet to participate
     if (existingCopyTrader.balance <= 0) {
       throw new ConflictException(
         'Insufficient balance in copy trading wallet',
       );
     }
 
-    const percentage = Number(trade.trade_percentage ?? trade.trade_price ?? 0);
-    // Deduction calculated as percentage of current copy trading wallet balance
-    const tradeCost =
-      Math.round(((existingCopyTrader.balance * percentage) / 100) * 100) / 100;
-
-    if (tradeCost <= 0 || existingCopyTrader.balance < tradeCost) {
-      throw new ConflictException('Insufficient balance');
-    }
-
-    existingCopyTrader.balance = Math.max(
-      0,
-      Math.round((existingCopyTrader.balance - tradeCost) * 100) / 100,
+    // trade_percentage is purely a profit-commission rate — no upfront deduction
+    const profitCommissionRate = Number(
+      trade.trade_percentage ?? trade.trade_price ?? 0,
     );
 
     existingCopyTrader.active_trades.push({
@@ -124,17 +141,18 @@ export class CopyTradingService {
       symbol: trade.symbol,
       winrate: trade.winrate,
       country: trade.country,
-      trade_percentage: Number(trade.trade_percentage ?? percentage ?? 0),
-      // PNL will be defaulted to 0 and updated later based on the performance of the trade
+      trade_percentage: profitCommissionRate,
+      // PNL starts at 0 — the admin sets this when settling/liquidating the trade
     });
 
     await existingCopyTrader.save();
 
+    // Record a zero-cost entry so the activity log stays consistent
     await this.transactionModel.create({
       email,
       type: 'buy',
-      amount: tradeCost,
-      note: `Internal transfer: copy trade ${trade.symbol} (${percentage}%)`,
+      amount: 0,
+      note: `Copy trade opened: ${trade.symbol} | commission rate: ${profitCommissionRate}%`,
       status: 'completed',
     });
 
