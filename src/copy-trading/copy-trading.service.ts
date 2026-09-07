@@ -54,17 +54,19 @@ export class CopyTradingService {
 
     if (existingCopyTrader.balance < amount) throw new ConflictException('Insufficient balance');
     existingCopyTrader.balance -= amount;
+
+    // No fee charged on withdrawal - 100% credited to user's wallet
     existingUser.wallet.USDT[2].balance += amount;
     await existingCopyTrader.save();
     await existingUser.save();
 
-    const transaction = this.transactionModel.create({
+    const transaction = await this.transactionModel.create({
       email,
-      type: 'withdraw',
+      type: 'withdrawal',
       amount,
       note: `Internal transfer: Withdraw from copy trading account`,
       status: 'completed',
-    })
+    });
 
     return transaction;
   }
@@ -97,6 +99,7 @@ export class CopyTradingService {
       symbol: trade.symbol,
       winrate: trade.winrate,
       country: trade.country,
+      trade_percentage: Number(trade.trade_percentage ?? percentage ?? 0)
       // PNL will be defaulted to 0 and updated later based on the performance of the trade
     });
 

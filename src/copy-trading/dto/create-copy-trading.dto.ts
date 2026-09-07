@@ -47,22 +47,23 @@ export class CreateTradeDTO {
 
 
    @ApiProperty({
-      example: 500,
-      type: Number,
-      description: "Trade's Price",
-   })
-   @IsNumber()
-   @IsOptional()
-   trade_price?: number;
-
-   @ApiProperty({
       example: 50,
       type: Number,
       description: "Trade's Percentage",
    })
    @IsNumber()
+   @IsNotEmpty()
+   trade_percentage!: number;
+
+   @ApiProperty({
+      example: 50,
+      type: Number,
+      description: "Trade's Price (optional alias)",
+      required: false,
+   })
+   @IsNumber()
    @IsOptional()
-   trade_percentage?: number;
+   trade_price?: number;
 
 
    @ApiProperty({

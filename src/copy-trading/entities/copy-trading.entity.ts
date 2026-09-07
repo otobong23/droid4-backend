@@ -21,6 +21,9 @@ class ActiveTrade {
    winrate!: number
 
    @Prop({ type: Number, default: 0 })
+   trade_percentage!: number;
+
+   @Prop({ type: Number, default: 0 })
    PNL?: number;
 
    @Prop({ type: String, required: true, lowercase: true, trim: true })

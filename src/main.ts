@@ -6,17 +6,19 @@ import * as bodyParser from 'body-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 config()
 
-const port = process.env.PORT || 4000 
+const port = process.env.PORT || 4000
 console.log(port)
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const httpAdapter = app.getHttpAdapter().getInstance(); // Express instance
+  httpAdapter.set('etag', false);
 
   const swaggerConfig = new DocumentBuilder()
-  .setTitle('Droid Index API')
-  .setDescription('API documentation for Droid Index')
-  .setVersion('1.0')
-  .build();
+    .setTitle('Droid Index API')
+    .setDescription('API documentation for Droid Index')
+    .setVersion('1.0')
+    .build();
 
   const documentFactory = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api-docs', app, documentFactory);
@@ -46,13 +48,20 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
   });
 
-//   app.useGlobalPipes(
-//   new ValidationPipe({
-//     whitelist: true,
-//     forbidNonWhitelisted: true,
-//     transform: true,
-//   }),
-// );
+  app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    next();
+  });
+
+  //   app.useGlobalPipes(
+  //   new ValidationPipe({
+  //     whitelist: true,
+  //     forbidNonWhitelisted: true,
+  //     transform: true,
+  //   }),
+  // );
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 

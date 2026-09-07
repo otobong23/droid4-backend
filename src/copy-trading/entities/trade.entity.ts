@@ -18,11 +18,11 @@ export class Trade {
    @Prop({ type: Number, default: 80, max: 100 })
    winrate!: number
 
-   @Prop({ type: Number, required: false })
-   trade_price?: number;
+   @Prop({ type: Number, required: true })
+   trade_percentage!: number;
 
    @Prop({ type: Number, required: false })
-   trade_percentage?: number;
+   trade_price?: number;
 
    @Prop({ type: String, required: true, lowercase: true, trim: true })
    country!: string;
