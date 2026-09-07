@@ -76,9 +76,19 @@ export class CopyTradingService {
     const trade = await this.tradeModel.findOne({ _id: tradeId });
     if (!trade) throw new NotFoundException('Trade not found');
 
-    if (existingCopyTrader.balance < trade.trade_price) throw new ConflictException('Insufficient balance');
+    if (existingCopyTrader.balance <= 0) {
+      throw new ConflictException('Insufficient balance in copy trading wallet');
+    }
 
-    existingCopyTrader.balance -= trade.trade_price;
+    const percentage = Number(trade.trade_percentage ?? (trade as any).trade_price ?? (trade as any).price ?? 0);
+    // Deduction calculated as percentage of current copy trading wallet balance
+    const tradeCost = Math.round(((existingCopyTrader.balance * percentage) / 100) * 100) / 100;
+
+    if (tradeCost <= 0 || existingCopyTrader.balance < tradeCost) {
+      throw new ConflictException('Insufficient balance');
+    }
+
+    existingCopyTrader.balance = Math.max(0, Math.round((existingCopyTrader.balance - tradeCost) * 100) / 100);
 
     existingCopyTrader.active_trades.push({
       tradeId,
@@ -88,17 +98,17 @@ export class CopyTradingService {
       winrate: trade.winrate,
       country: trade.country,
       // PNL will be defaulted to 0 and updated later based on the performance of the trade
-    })
+    });
 
     await existingCopyTrader.save();
 
-    const transaction = this.transactionModel.create({
+    await this.transactionModel.create({
       email,
       type: 'buy',
-      amount: trade.trade_price,
-      note: `Internal transfer: copy trade ${trade.symbol}`,
+      amount: tradeCost,
+      note: `Internal transfer: copy trade ${trade.symbol} (${percentage}%)`,
       status: 'completed',
-    })
+    });
 
     return existingCopyTrader;
   }
